@@ -1,0 +1,55 @@
+<?php
+
+	session_start();
+
+	include("inc/global/globals.inc.php");
+	include(MODEL_PATH."Connection.class.php");
+	include(MODEL_PATH."SessionManagement.class.php");
+	include(MODEL_PATH."Ldap_config.class.php");
+	
+	SessionManagement::sessionCheck();
+	
+	if(isset($_POST["ldap_host"])) {
+		$ldap_config = new Ldap_config();
+		$ldap_config->init(
+			$_SESSION["enterprise_id"],
+			$_POST["ldap_host"],
+			$_POST["ldap_port"],
+			$_POST["ldap_rdn"],
+			$_POST["ldap_password"],
+			$_POST["ldap_search_string"]
+		);
+	}
+	
+	$title = "Choose service";
+	include(TEMPLATE_PATH."system/head.html");
+	
+	$ldap_config = Ldap_config::load($_SESSION["enterprise_id"]);
+	if($ldap_config == NULL) {
+		$ldap_host = "";
+		$ldap_port = "";
+		$ldap_rdn = "";
+		$ldap_password = "";
+		$ldap_search_string	= "";	
+	}
+	else {
+		$ldap_host = $ldap_config->getLdap_host();
+		$ldap_port = $ldap_config->getLdap_port();
+		$ldap_rdn = $ldap_config->getLdap_rdn();
+		$ldap_password = $ldap_config->getLdap_password();
+		$ldap_search_string = $ldap_config->getLdap_search_string();
+	}
+	
+	$content = sprintf(
+		file_get_contents(TEMPLATE_PATH."ldap-config.html"),
+		$ldap_host,
+		$ldap_port,
+		$ldap_rdn,
+		$ldap_password,
+		$ldap_search_string
+	);
+
+	$navigation = "<a href='service-overview.html'>&#x2191; Go back</a>";
+	include(TEMPLATE_PATH."system/main.html");	
+	
+?>

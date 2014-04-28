@@ -1,0 +1,24 @@
+<form id="ldap-form" action="" method="post" accept-charset="ISO-8859-1">
+	<div class="box">
+		<span class="action-title">LDAP configurations</span>
+		<span class="action-desc">To obtain members of your facility please provide LDAP information below.</span>
+		<span class="action-field">
+			LDAP host name: <input type="text" name="ldap_host" value="%1$s" />
+		</span>
+		<span class="action-field">
+			LDAP port: <input type="text" name="ldap_port" value="%2$s" />
+		</span>		
+		<span class="action-field">
+			LDAP RDN: <input type="text" name="ldap_rdn" value="%3$s" />
+		</span>		
+		<span class="action-field">
+			LDAP password: <input type="password" name="ldap_password" value="%4$s" />
+		</span>
+		<span class="action-field">
+			LDAP search string: <input type="text" name="ldap_search_string" value="%5$s" />
+		</span>
+		<span class="action-bottom">
+			<a href="javascript: $('#ldap-form')[0].submit();">Save</a>
+		</span>
+	</div>
+</form>

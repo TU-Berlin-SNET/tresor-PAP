@@ -1,0 +1,80 @@
+<?php
+
+	session_start();
+
+	include("inc/global/globals.inc.php");
+	include(MODEL_PATH."ServiceParser.class.php");
+	include(MODEL_PATH."Connection.class.php");
+	include(MODEL_PATH."Action.class.php");
+	include(MODEL_PATH."LdapHelper.class.php");
+	include(MODEL_PATH."Ldap_config.class.php");
+	include(MODEL_PATH."SessionManagement.class.php");
+
+	SessionManagement::sessionCheck();	
+	
+	$title = "Generate policy";
+	include(TEMPLATE_PATH."system/head.html");
+
+	$s = ServiceParser::getServicebyId($_GET["id"]);
+	if($s == null) die;
+	
+	$ldap_config = Ldap_config::load($_SESSION["enterprise_id"]);
+	if($ldap_config == NULL) {
+		print "<meta http-equiv='refresh' content='0; URL=ldap-config.html'>";
+		die;
+	}
+	
+	$l = new LdapHelper(
+		$ldap_config->getLdap_host(),
+		$ldap_config->getLdap_port(),
+		$ldap_config->getLdap_rdn(),
+		$ldap_config->getLdap_password(),
+		$ldap_config->getLdap_search_string()
+	);
+	$roles = $l->getRoles();
+	
+	$content = "";
+	$content .= sprintf(
+		file_get_contents(TEMPLATE_PATH."action.html"),
+		Action::subjectToHTML($roles),
+		Action::timeToHTML()
+	);
+	
+	$content .= sprintf(
+		file_get_contents(TEMPLATE_PATH."action/action-form-start.html"),
+		$_GET["id"],
+		$s->getDescOfService(),
+		$s->getBaseUrlOfService()
+	);
+	
+	$data = array();
+	if(file_exists(DATA_PATH.$_SESSION["enterprise_id"]."_".$_GET["id"]."_policy")) {
+		$data = json_decode(file_get_contents(DATA_PATH.$_SESSION["enterprise_id"]."_".$_GET["id"]."_policy"), true);
+	}
+	
+	foreach($s->getActionsOfService() as $key => $value) {
+		if($data == NULL)
+			$content .= $value->toHTML();
+		else {
+			if(!empty($data["subject"][$key]))
+				$subject = json_encode($data["subject"][$key]);
+			else
+				$subject = "{ roles: [], users: [] }";
+			if(!empty($data["time"][$key]))
+				$time = json_encode($data["time"][$key]);
+			else
+				$time = "{ date: [\"\", \"\"], time: [\"\", \"\"] }";
+			if(!empty($data["location"][$key]))
+				$location = json_encode($data["location"][$key]);
+			else
+				$location = "[]";
+			$content .= $value->toHTML($subject, $time, $location);
+		}
+	}
+	$content .= file_get_contents(TEMPLATE_PATH."action/action-form-end.html");
+
+	$navigation = "<a href='service-overview.html'>&#x2191; Go back</a>";
+	$navigation .= "<a href='javascript: formSubmit();' style='float: right;' >Generate policy</a>";
+	include(TEMPLATE_PATH."system/main.html");
+	
+?>

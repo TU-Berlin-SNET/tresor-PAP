@@ -1,0 +1,19 @@
+<script type="text/JavaScript">
+	$(function() {
+		$("#date-from").datepicker({ dateFormat: "yy-mm-dd" });
+		$("#date-to").datepicker({ dateFormat: "yy-mm-dd" });
+		$("#time-from").timepicker();
+		$("#time-to").timepicker();
+	});
+</script>
+<fieldset>
+	<legend>Timeframe</legend>
+	Between <input id="date-from" type="text" name="date-from" value="" readonly="readonly" onChange="updateTime(this, receiverId);" /> 
+	and <input id="date-to" type="text" name="date-to" value="" readonly="readonly" onChange="updateTime(this, receiverId);" />
+</fieldset>
+<hr />
+<fieldset>
+	<legend>Hours</legend>
+	Between <input id="time-from" type="text" name="time-from" value="" readonly="readonly" onChange="updateTime(this, receiverId);" /> 
+	and <input id="time-to" type="text" name="time-to" value="" readonly="readonly" onChange="updateTime(this, receiverId);" />
+</fieldset>

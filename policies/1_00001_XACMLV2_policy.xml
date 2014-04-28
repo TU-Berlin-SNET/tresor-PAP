@@ -1,0 +1,1537 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Policy xmlns="urn:oasis:names:tc:xacml:2.0:policy:schema:os" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xacml:2.0:policy:schema:os http://docs.oasis-open.org/xacml/2.0/access_control-xacml-2.0-policy-schema-os.xsd" PolicyId="00001" RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:permit-overrides">
+	<Description>&#13;
+		The Patient Management System (PMS) is a central system to manage patients and their treatment during their stay in your &#13;
+		facility. Comfortably organize your patients, their diagnosis, medications and parameters by using the PMS.&#13;
+		Archive patients to later review their files when they are retaken to your hospital. Share patients with other &#13;
+		hospitals to obtain a more precise course of their diseases.&#13;
+	</Description>
+	<Target>
+		<Resources>
+			<Resource>
+				<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med</AttributeValue>
+					<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+				</ResourceMatch>
+			</Resource>
+		</Resources>
+		<Subjects>
+			<Subject>
+				<SubjectMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">1</AttributeValue>
+					<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id-qualifier" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+				</SubjectMatch>
+			</Subject>
+		</Subjects>
+	</Target>
+	<Rule RuleId="0" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/patient/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">get</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:date-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:date-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-date" DataType="http://www.w3.org/2001/XMLSchema#date"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#date">2014-03-01</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:date-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:date-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-date" DataType="http://www.w3.org/2001/XMLSchema#date"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#date">2014-05-31</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513168501108,13.319860696793 52.512688591622,13.319946527481 52.51271470928,13.320214748383 52.513217471169,13.320123553276 52.513168501108,13.319860696793</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="1" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/patient/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">post</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513204412491,13.319860696793 52.512682062205,13.319967985153 52.51271470928,13.320241570473 52.513233794511,13.32013964653 52.513204412491,13.319860696793</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="2" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/bloodpressure/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">put</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513204412491,13.319828510284 52.512675532787,13.319951891899 52.512695121038,13.320246934891 52.5132142065,13.320155739784 52.513204412491,13.319828510284</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="3" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/bloodpressure/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">post</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513194618481,13.319866061211 52.512688591622,13.319984078407 52.51270491516,13.320204019547 52.513210941831,13.320128917694 52.513194618481,13.319866061211</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="4" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/medication/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">put</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513224000506,13.319855332375 52.512695121038,13.319941163063 52.512731032808,13.320220112801 52.513246853179,13.320134282112 52.513224000506,13.319855332375</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="5" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/medication/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">post</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513194618481,13.319855332375 52.512695121038,13.319930434227 52.512711444573,13.320252299309 52.513201147821,13.32013964653 52.513194618481,13.319855332375</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="6" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/medicament/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">get</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513197883151,13.319807052612 52.512695121038,13.319935798645 52.51271470928,13.320220112801 52.513217471169,13.320155739784 52.513197883151,13.319807052612</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="7" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/medicament/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">put</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.51319135381,13.31983923912 52.51270491516,13.319951891899 52.512731032808,13.320225477219 52.513220735838,13.320171833038 52.51319135381,13.31983923912</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="8" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/medicament/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">post</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513184824468,13.31983923912 52.512682062205,13.319973349571 52.512708179867,13.320225477219 52.513230529843,13.320145010948 52.513184824468,13.31983923912</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="9" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/operation/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">get</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513197883151,13.319823145866 52.512675532787,13.319925069809 52.512701650453,13.320236206055 52.513210941831,13.320155739784 52.513197883151,13.319823145866</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="10" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/operation/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">put</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject:role" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">doctor</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">intern</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">attending</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">chief_physician</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513181559796,13.319828510284 52.512672268078,13.319962620735 52.512695121038,13.320230841637 52.513237059178,13.32016646862 52.513181559796,13.319828510284</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="11" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/operation/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">post</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject:role" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">chief_physician</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">attending</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">intern</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">doctor</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513188089139,13.319817781448 52.512685326914,13.319941163063 52.512701650453,13.320263028145 52.5132142065,13.320155739784 52.513188089139,13.319817781448</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="12" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/archive/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">get</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513194618481,13.319828510284 52.512685326914,13.319967985153 52.512698385745,13.320230841637 52.513230529843,13.320150375366 52.513194618481,13.319828510284</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="13" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/archive/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">put</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject:role" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">doctor</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">intern</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">chief_physician</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">attending</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.51319135381,13.319828510284 52.512659209238,13.319951891899 52.51270491516,13.320230841637 52.513207677161,13.320134282112 52.51319135381,13.319828510284</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="14" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/patient/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">delete</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject:role" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">doctor</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">attending</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">chief_physician</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513194618481,13.31983923912 52.512708179867,13.319951891899 52.512724503398,13.320263028145 52.513217471169,13.32013964653 52.513194618481,13.31983923912</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="15" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/medicament/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">delete</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject:role" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">doctor</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">attending</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">chief_physician</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513184824468,13.319833874702 52.51269185633,13.319957256317 52.512708179867,13.320241570473 52.513217471169,13.320134282112 52.513184824468,13.319833874702</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="16" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/operation/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">delete</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject:role" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">doctor</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">attending</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">chief_physician</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513197883151,13.31983923912 52.512698385745,13.319973349571 52.51271470928,13.320225477219 52.513201147821,13.320145010948 52.513197883151,13.31983923912</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="17" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/bloodpressure/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">delete</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject:role" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">doctor</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">attending</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">chief_physician</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.51317176578,13.31983923912 52.512701650453,13.319946527481 52.512708179867,13.320263028145 52.513217471169,13.320123553276 52.51317176578,13.31983923912</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="18" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/archive/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">delete</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject:role" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">doctor</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">attending</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">chief_physician</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.51317176578,13.319849967957 52.512701650453,13.319941163063 52.512721238692,13.320204019547 52.513201147821,13.320161104202 52.51317176578,13.319849967957</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="19" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/profile/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">get</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">JuliusHibbert</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513181559796,13.319844603539 52.512708179867,13.319946527481 52.512721238692,13.320246934891 52.513224000506,13.320161104202 52.513181559796,13.319844603539</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="20" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/profile/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">post</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">JuliusHibbert</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513201147821,13.319828510284 52.51271470928,13.319935798645 52.512721238692,13.320241570473 52.513240323846,13.32013964653 52.513201147821,13.319828510284</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="21" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/booking/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">get</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">JuliusHibbert</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.5132142065,13.319828510284 52.512685326914,13.319946527481 52.512708179867,13.320236206055 52.513233794511,13.320182561874 52.5132142065,13.319828510284</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="22" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/booking/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">post</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">JuliusHibbert</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513197883151,13.319855332375 52.512698385745,13.319962620735 52.512711444573,13.320225477219 52.5132142065,13.320118188858 52.513197883151,13.319855332375</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="23" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/settings/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">get</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">JuliusHibbert</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513207677161,13.319844603539 52.512688591622,13.319967985153 52.512708179867,13.320225477219 52.513220735838,13.320123553276 52.513207677161,13.319844603539</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="24" Effect="Permit">
+		<Target>
+			<Resources>
+				<Resource>
+					<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://www.pms.med/settings/*</AttributeValue>
+						<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ResourceMatch>
+				</Resource>
+			</Resources>
+			<Actions>
+				<Action>
+					<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">post</AttributeValue>
+						<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</ActionMatch>
+				</Action>
+			</Actions>
+		</Target>
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of">
+					<Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal"/>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-bag">
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">JuliusHibbert</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">08:00:00</AttributeValue>
+					</Apply>
+					<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-less-than-or-equal">
+						<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time" DataType="http://www.w3.org/2001/XMLSchema#time"/>
+						</Apply>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">20:00:00</AttributeValue>
+					</Apply>
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+					<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-intersects">
+						<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only">
+							<EnvironmentAttributeDesignator AttributeId="position" DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry" MustBePresent="true"/>
+						</Apply>
+						<AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+							<gml:Polygon xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
+								<gml:outerBoundaryIs>
+									<gml:LinearRing>
+										<gml:coordinates>52.513207677161,13.319844603539 52.512695121038,13.319984078407 52.512717973986,13.320236206055 52.513224000506,13.32016646862 52.513207677161,13.319844603539</gml:coordinates>
+									</gml:LinearRing>
+								</gml:outerBoundaryIs>
+							</gml:Polygon>
+						</AttributeValue>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+	<Rule RuleId="else" Effect="Deny"/>
+</Policy>

@@ -1,0 +1,96 @@
+<style>
+	html, body { margin: 0; padding: 0; }
+	table { width: 100%; }
+	thead td { font-weight: bold; background: #2d2d2d; color: white; }
+	tr:nth-child(even) { background: #e7e7e7; }
+	tr:nth-child(even) td { border-top: 1px solid grey; border-bottom: 1px solid grey; }
+	tr:hover { background: #B5D0EB }
+	td { padding: 6px }
+</style>
+<?php
+
+	$url = "http://xacml.snet.tu-berlin.de:9090/rest/pdp";
+	$requests = getV3requests();
+	
+	print "
+		<table cellpadding='0' cellspacing='0'>
+			<thead>
+				<tr><td>Request</td><td>Expected result</td><td>Actual result</td><td>Status</td></tr>
+			</thead>
+			<tbody>
+	";
+	
+	$i = 0;
+	foreach($requests as $key => $value) {
+		$request = file_get_contents("requests/".$value[0]);
+		$response = strip_tags(xacml_request($url, $request));
+		$value[1] = ucfirst($value[1]);
+		if($value[1] == $response) {
+			$i++;
+			$status = "OK";
+			$color = "green";
+		}
+		else {
+		 $status = "ERROR";
+		 $color = "red";
+		}
+		print "
+			<tr>
+				<td>".$value[0]."</td>
+				<td>".ucfirst($value[1])."</td>
+				<td>".$response."</td>
+				<td style='color: ".$color.";'>".$status."</td>
+			</tr>
+		";
+	}
+	
+	print "
+		<tr><td colspan='4' style='text-align: right; font-weight: bold;'>Correct ".$i." of ".count($requests)."</td></tr>
+	";
+	
+	print "
+			</tbody>
+		</table>
+	";
+	
+	function getV3requests() {
+		$requests = array();
+		
+		$d = dir("requests/");
+		while(false != ($entry = $d->read())) {
+			if($entry == "." || $entry == "..") 
+				continue;
+			
+			$file_ext = explode(".", $entry);
+			if($file_ext[count($file_ext)-1] != "xml") 
+				continue;
+			
+			$filename= explode("_", $file_ext[0]);
+			$arr = array();
+			if($filename[4] == "V3") {
+				$arr[0] = implode("_", $filename).".xml";
+				$arr[1] = $filename[5];
+			}			
+			if($filename[5] == "V3") {
+				$arr[0] = implode("_", $filename).".xml";
+				$arr[1] = $filename[6];
+			}
+			if(!empty($arr))
+				$requests[] = $arr;
+		}	
+		return $requests;
+	}
+	
+	function xacml_request($url, $request) {
+		$ch = curl_init($url);
+		 
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		 
+		$response = curl_exec($ch);
+		curl_close($ch);
+		return $response;
+	}
+	
+?>

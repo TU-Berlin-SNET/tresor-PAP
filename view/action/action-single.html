@@ -1,0 +1,47 @@
+<script type="text/JavaScript">
+	$(function() {
+		$("#subject-%1$s")[0].value = JSON.stringify(%6$s);
+		$("#time-%1$s")[0].value = JSON.stringify(%7$s);
+		$("#location-%1$s")[0].value = JSON.stringify(%8$s);
+	});
+</script>
+<div class="box">
+	<span class="action-title">Action</span>
+	<span class="action-desc">%2$s</span>
+	
+	<!-- Resource -->
+	<span class="action-field">
+		Resource: <input type="text" name="resource[%1$s]" value="%3$s" readonly="readonly" />
+	</span>
+	<!-- Methods -->
+	<span class="action-field">Methods: %4$s</span>
+	
+	<!-- Parameters -->
+	<span class="action-field">Parameters: %5$s</span>
+	
+	<!-- Subjects -->
+	<span class="action-field">
+		Subjects:
+		<a class="inline" href="#ldap-content" onClick="receiverId = '%1$s';">
+			<input id="subject-%1$s" type="text" name="subject[%1$s]" value="" readonly="readonly" />
+		</a>
+	</span>
+	
+	<!-- Time -->
+	<span class="action-field">
+		Time: 
+		<a class="inline" href="#time-content" onClick="receiverId = '%1$s';">
+			<input id="time-%1$s" type="text" name="time[%1$s]" value="" readonly="readonly" />
+		</a>
+	</span>
+	
+	<!-- Location -->
+	<span class="action-field">
+		Location: 
+		<a class="inline" href="#location-content" onClick="receiverId = '%1$s';">
+			<input id="location-%1$s" type="text" name="location[%1$s]" value="" readonly="readonly" />
+		</a>
+	</span>
+
+	<span class="action-bottom"></span>
+</div>

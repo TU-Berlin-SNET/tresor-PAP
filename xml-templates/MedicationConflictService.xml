@@ -1,0 +1,22 @@
+<service id="00002" name="Medication Conflict Service" url="http://www.mcs.med">
+	<description>
+		The Medication Conflict Service (MCS) disposes of an always up to date database of medicaments 
+		and conflicts occurring by simultaneous administration. The MCS searches for conflicts in a given list of medicaments
+		and proposes alternatives if such were detected. 
+		The MCS does not need any patient information neither will the service store any information you submitted.
+	</description>
+	<paths>
+		<path methods="post" url="http://www.mcs.med/medication/*" params="">
+			<desc>Send a combination of medicaments to retrieve a list of conflicts and alternatives.</desc>
+		</path>
+		<path methods="get post" url="http://www.mcs.med/profile/*" params="">
+			<desc>Obtain and modify the profile of the service user.</desc>
+		</path>
+		<path methods="get post" url="http://www.mcs.med/booking/*" params="">
+			<desc>Obtain the booking page to add or modify the options the service user booked.</desc>
+		</path>
+		<path methods="get post" url="http://www.mcs.med/settings/*" params="">
+			<desc>Modify settings regarding the service.</desc>
+		</path>
+	</paths>
+</service>

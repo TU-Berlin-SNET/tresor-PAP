@@ -1,0 +1,76 @@
+<?php
+
+	session_start();
+	
+	include("../inc/global/globals.inc.php");
+	include("../inc/global/xacml.inc.php");
+	include("../".MODEL_PATH."ServiceParser.class.php");
+	include("../".MODEL_PATH."LdapHelper.class.php");
+	include("../".MODEL_PATH."Connection.class.php");
+	include("../".MODEL_PATH."Ldap_config.class.php");
+	include("../".MODEL_PATH."XacmlPolicyGenerator.class.php");
+	include("../".MODEL_PATH."SessionManagement.class.php");
+	
+	SessionManagement::sessionCheck();	
+
+	if(isset($_POST["method"]) && isset($_POST["param"])) {
+		$ldap_config = Ldap_config::load($_SESSION["enterprise_id"]);		
+		
+		$l = new LdapHelper(
+			$ldap_config->getLdap_host(),
+			$ldap_config->getLdap_port(),
+			$ldap_config->getLdap_rdn(),
+			$ldap_config->getLdap_password(),
+			$ldap_config->getLdap_search_string()
+		);
+		$people = $l->getPeopleByUid($_POST["param"]);
+		if(!empty($people)) {
+			print json_encode($people);
+		}
+	}
+	
+	if(isset($_POST) && !isset($_POST["method"])) {
+		
+		// Input handling.
+		foreach($_POST["resource"] as $key => $value) {
+			$_POST["subject"][$key] = json_decode($_POST["subject"][$key]);
+			$_POST["time"][$key] = json_decode($_POST["time"][$key]);
+			$_POST["location"][$key] = json_decode($_POST["location"][$key]);			
+		}
+		
+		// Serialize the data  to prevent excessive parsing of long XACML policies.
+		$_POST["resource"] = array_values($_POST["resource"]);
+		$_POST["methods"] = array_values($_POST["methods"]);
+		$_POST["params"] = array_values($_POST["params"]);
+		$_POST["subject"] = array_values($_POST["subject"]);
+		$_POST["time"] = array_values($_POST["time"]);
+		$_POST["location"] = array_values($_POST["location"]);
+		
+		$f = fopen("../".DATA_PATH.$_SESSION["enterprise_id"]."_".$_POST["serviceId"]."_policy", "w+");
+		fwrite($f, json_encode($_POST));
+		fclose($f);
+		
+		foreach($_POST["resource"] as $key => $value) {
+			if(is_object($_POST["time"][$key])) {
+				if(!empty($_POST["time"][$key]->time[0])) {
+					$_POST["time"][$key]->time[0] .= ":00";
+					$_POST["time"][$key]->time[1] .= ":00";
+				}
+			}
+			if(is_array($_POST["location"][$key])) {
+				foreach($_POST["location"][$key] as $index => $polygon) {
+					foreach($polygon as $i => $point)
+						$_POST["location"][$key][$index][$i] = $point->lat.",".$point->lng;
+					$_POST["location"][$key][$index] = implode(" ", $_POST["location"][$key][$index]);
+				}
+			}
+		}
+
+		// Generate policy.
+		XacmlPolicyGenerator::generateV2Policy("../".POLICY_PATH.$_SESSION["enterprise_id"]."_".$_POST["serviceId"]."_XACMLV2_policy.xml", $_POST, $_POST["serviceId"], $_POST["serviceDesc"], $_POST["serviceUrl"], $_SESSION["enterprise_id"]);
+		XacmlPolicyGenerator::generateV3Policy("../".POLICY_PATH.$_SESSION["enterprise_id"]."_".$_POST["serviceId"]."_XACMLV3_policy.xml", $_POST, $_POST["serviceId"], $_POST["serviceDesc"], $_POST["serviceUrl"], $_SESSION["enterprise_id"]);
+		
+		print "<meta http-equiv='refresh' content='0; URL=../success.html?id=".$_POST["serviceId"]."'>";
+	}
+
+?>

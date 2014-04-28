@@ -1,0 +1,290 @@
+<script type="text/JavaScript">
+	var receiverId;
+	
+	// Obtaining the location to set the center of the map to the user's location.
+	if (navigator.geolocation) 
+		navigator.geolocation.getCurrentPosition(success, error);
+	function success(position) { map.setView([position.coords.latitude, position.coords.longitude], 18); }
+	function error(error) { map.setView([51.505, -0.09], 18); }		
+	
+	// A function to load the values from the action's subject field.
+	// Returned will be the values from the action with the Action-ID = receiverId.
+	function loadSubjectInput() {
+		if($("#subject-"+receiverId)[0].value == '')
+			return { roles: [], users: [] };
+		else
+			return jQuery.parseJSON($("#subject-"+receiverId)[0].value);	
+	}
+	
+	// A function to load the values from the action's time field.
+	// Similar to loadSubjectInput()
+	function loadTimeInput() {
+		if($("#time-"+receiverId)[0].value == '')
+			return { date: ["",""], time: ["",""] };
+		else
+			return jQuery.parseJSON($("#time-"+receiverId)[0].value);	
+	}	
+	
+	function loadLocationInput() {
+		if($("#location-"+receiverId)[0].value == '')
+			return [];
+		else
+			return jQuery.parseJSON($("#location-"+receiverId)[0].value);
+	}
+	
+	// A function that creates a div containing a name from the LDAP.
+	// It emphasizes that a certain user has been selected.
+	function buildSelectedSubject(value) {
+		var div = document.createElement("div");
+		div.className = "selected-suggestion";
+		div.innerHTML = value;
+		div.addEventListener('click', function() { removeSubject(this, receiverId) });
+		$("#subject-selection")[0].appendChild(div);
+		updateSubject(div.parentNode, receiverId);
+	}
+	
+	// A function to update the action's subject field.
+	// Called when a user has been added or removed from the selection.
+	function updateSubject(parentNode, id) {
+		var entries = loadSubjectInput();
+		entries.users = [];
+		for(var i=0; i < parentNode.childNodes.length; i++) {
+			entries.users.push(parentNode.childNodes[i].innerHTML);
+		}	
+		$("#subject-"+id)[0].value = JSON.stringify(entries);
+	}	
+	
+	// A function to remove a selected user from the selection.
+	// The function implies the execution of updateSubject().
+	function removeSubject(elem, id) {
+		var parentNode = elem.parentNode;
+		parentNode.removeChild(elem);
+		updateSubject(parentNode, id);
+	}	
+	
+	// A function to update the action's subject field.
+	// Called when a role has been checked or unchecked.
+	function updateRole(elem, id) {
+		if($("#subject-"+id)[0].value == '')
+			var entries = { roles: [], users: [] };
+		else
+			var entries = jQuery.parseJSON($("#subject-"+id)[0].value);
+		if(elem.checked == true) {
+			entries.roles.push(elem.value);
+		}
+		else {
+			var index = entries.roles.indexOf(elem.value);
+			if(index > -1)
+				entries.roles.splice(index, 1);
+		}
+		$("#subject-"+id)[0].value = JSON.stringify(entries);
+	}
+	
+	// A function to update the action's time field.
+	// This function handles all changes that were made regarding the time field.
+	function updateTime(elem, id) {
+		var array = loadTimeInput();
+		
+		if(elem.type == "text") {
+			
+			// If a date has been specified, ensure that 
+			// the to-statement is not smaller than the from-statement.
+			if(elem.name.substr(0, 4) == "date") {
+				if(elem.name.substr(5,4) == "from") {
+					if($("#date-to")[0].value == '')
+						$("#date-to")[0].value = elem.value;
+					else {
+						if(new Date(elem.value) > new Date($("#date-to")[0].value))
+							$("#date-from")[0].value = $("#date-to")[0].value;
+					}
+				}
+				else if(elem.name.substr(5,2) == "to") {
+					if($("#date-from")[0].value == '')
+						$("#date-from")[0].value = elem.value;
+					else {
+						if(new Date(elem.value) < new Date($("#date-from")[0].value))
+							$("#date-to")[0].value = $("#date-from")[0].value;
+					}
+				}
+				
+				// If a date statement has been made before, delete the old entries.
+				if(array.date.length == 2)
+					array.date.splice(0,2);
+				
+				// Push the new entries to the date array.
+				array.date.push($("#date-from")[0].value, $("#date-to")[0].value);
+			}
+			
+			// Similar to date specification.
+			else if(elem.name.substr(0, 4) == "time") {
+				if(elem.name.substr(5,4) == "from") {
+					if($("#time-to")[0].value == '')
+						$("#time-to")[0].value = elem.value;
+					else {
+						var from = elem.value.split(":");
+						var to = $("#time-to")[0].value.split(":");
+						var timeFrom = new Date(0, 0, 0, from[0], from[1], 0, 0);
+						var timeTo = new Date(0, 0, 0, to[0], to[1], 0, 0);
+						if(timeFrom > timeTo)
+							$("#time-from")[0].value = $("#time-to")[0].value;
+					}
+				}
+				
+				// Same restriction.
+				else if(elem.name.substr(5,2) == "to") {
+					if($("#time-from")[0].value == '')
+						$("#time-from")[0].value = elem.value;
+					else {
+						var from = $("#time-from")[0].value.split(":");
+						var to = elem.value.split(":");
+						var timeFrom = new Date(0, 0, 0, from[0], from[1], 0, 0);
+						var timeTo = new Date(0, 0, 0, to[0], to[1], 0, 0);					
+						if(timeTo < timeFrom)
+							$("#time-to")[0].value = $("#time-from")[0].value;
+					}
+				}
+				
+				// Same array writing. (Copy-Paste & Find-Replace ;)
+				if(array.time.length == 2)
+					array.time.splice(0,2);
+				array.time.push($("#time-from")[0].value, $("#time-to")[0].value);
+			}
+		}
+		
+		// Write the array to the action's time field.
+		$("#time-"+id)[0].value = JSON.stringify(array);
+	}	
+	
+	// This statement enables the execution of the containing commands,
+	// when the document is completely loaded.
+	$(function() {
+	
+		// Initialization of the colorboxes for elements of the class 'inline'
+		$(".inline").colorbox({ inline: true, width: "50%%" });
+		
+		// Enable auto-complete feature for the subject search field.
+		// Suggestions will be visualized while the user types an uid.
+		$(".subject-auto").autocomplete({ source: [] });
+		
+		// Called when a suggestion has been selected.
+		// The selected suggestion will be written to the action's subject field.
+		$(".subject-auto").autocomplete({
+			select: function(event, ui) {
+				if($("#subject-"+receiverId)[0].value.indexOf(ui.item.value) == -1) {
+					buildSelectedSubject(ui.item.value);
+				}
+				
+				// Clear the search field.
+				$(this).val(''); 
+					return false;
+			}
+		});		
+	});	
+
+	// A function to prevent a LDAP request when the search field is still empty.
+	// LDAP request are made when the first character has been typed.
+	// Assuming a LDAP with thousands of entries, this function will prevent querying the whole LDAP.
+	function handleRequest(id, value) {
+		if(value == '') return null;
+		else {
+			searchLdapFor(value).done(setResult);
+		}
+	}
+	
+	// The actual LDAP request.
+	function searchLdapFor(value) {
+		return $.ajax
+		({
+			type : "post",
+			data : { method: "searchLdapFor", param: value },
+			url : "control/serviceController.html",
+			async : false
+		});
+	}
+	
+	// After receiving the result from the LDAP server 
+	// the result will be set as source for auto-complete suggestions.
+	function setResult(data /* , textStatus, jqXHR */ ) {
+		if(data == '')
+			$(".subject-auto").autocomplete("option", "source", []);
+		else
+			$(".subject-auto").autocomplete("option", "source", jQuery.parseJSON(data));
+	}
+	
+	// On cbox_load the action's subject, time and location field will be loaded.
+	// The colorbox will be transformed to the state in which it had been closed.
+	$(document).bind('cbox_load', function() { 
+		
+		// Load the action's fields.
+		var subject = loadSubjectInput();
+		var time = loadTimeInput();
+		var location = loadLocationInput();
+		
+		// Subject.
+		for(var i=0; i < subject.roles.length; i++)
+			$("input[value="+subject.roles[i]+"]")[0].checked = true;
+		for(var i=0; i < subject.users.length; i++)
+			buildSelectedSubject(subject.users[i]);
+		
+		// Time.
+		$("#date-from")[0].value = time.date[0];
+		$("#date-to")[0].value = time.date[1];
+		$("#time-from")[0].value = time.time[0];
+		$("#time-to")[0].value = time.time[1];
+		
+		// Location.
+		load(location);
+	});
+	
+	// On cbox_complete (the colorbox is presented to the user) invalidate the size of the map. 
+	// Otherwise graphical errors occur.
+	$(document).bind('cbox_complete', function() { 
+		map.invalidateSize(); 
+	});					
+	
+	// On cbox_cleanup clear all fields.
+	$(document).bind('cbox_cleanup', function() { 
+		// Location.
+		reset(receiverId);
+		
+		// Unset the receiverId.
+		receiverId = 0;
+		
+		// Subject.
+		for(var i=0; i < $("input[name=role]").length; i++)
+			$("input[name=role]")[i].checked = false;
+		$("#subject-search")[0].value = '';
+		$("#subject-selection")[0].innerHTML = '';
+		
+		// Time.
+		$("#date-from")[0].value = '';
+		$("#date-to")[0].value = '';
+		$("#time-from")[0].value = '';
+		$("#time-to")[0].value = '';
+	});
+	
+	function formSubmit() {
+		$("#main-form")[0].submit();
+	}
+</script>
+
+<!-- Colorbox to visualize LDAP entries -->
+<div style="display:none">
+	<div id="ldap-content">
+		%1$s
+	</div>
+</div>
+
+<!-- Colorbox for Time -->
+<div style="display:none">
+	<div id="time-content">
+		%2$s
+	</div>
+</div>
+
+<!-- Colorbox for Location -->
+<div style="display:none">
+	<div id="location-content">
+		<div id="map"></div>
+	</div>
+</div>

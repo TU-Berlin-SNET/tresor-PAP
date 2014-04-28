@@ -1,0 +1,30 @@
+<?php
+
+	session_start();
+
+	include("inc/global/globals.inc.php");
+	include(MODEL_PATH."ServiceParser.class.php");
+	include(MODEL_PATH."Action.class.php");
+	include(MODEL_PATH."SessionManagement.class.php");
+	
+	SessionManagement::sessionCheck();	
+
+	$title = "Policy successfully generated.";
+	include(TEMPLATE_PATH."system/head.html");
+	
+	$v2 = file_get_contents(POLICY_PATH.$_SESSION["enterprise_id"]."_".$_GET["id"]."_XACMLV2_policy.xml");
+	$v3 = file_get_contents(POLICY_PATH.$_SESSION["enterprise_id"]."_".$_GET["id"]."_XACMLV3_policy.xml");
+	
+	$content = sprintf(
+		file_get_contents(TEMPLATE_PATH."success.html"),
+		$_GET["id"],
+		$v2,
+		$v3
+	);
+
+	$navigation = "<a href='service-overview.html'>&#x2191; Service overview</a>";
+	$navigation .= "<a href='#v2'>&#x2193; Go to XAVMLv2 policy</a>";
+	$navigation .= "<a href='#v3'>&#x2193; Go to XAVMLv3 policy</a>";
+	include(TEMPLATE_PATH."system/main.html");
+	
+?>

@@ -1,0 +1,11 @@
+<service id="0000x" name="Service A" url="http://www.service-a.tld">
+	<description>Some description</description>
+	<paths>
+		<path methods="get" url="http://www.service-a.tld/sub/*" params="">
+			<desc>Desc of action</desc>
+		</path>
+		<path methods="post" url="http://www.service-a.tld/sub/*" params="">
+			<desc>Desc of other action</desc>
+		</path>
+	</paths>
+</service>

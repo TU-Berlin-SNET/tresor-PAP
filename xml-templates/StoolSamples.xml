@@ -1,0 +1,34 @@
+<service id="00004" name="Stool Sample Service" url="http://www.three-s.med">
+	<description>
+		The Stool Sample Service (S3) provides the results of samples, which were sent 
+		and analysed by our participating partner laboratories. Our archive provides a patient's stool sample history to
+		to detect hints for possible diseases early. Other hospitals can be authorized and granted access to
+		the results to enhance cooperation. To preserve privacy a stool sample is never linked to a patient directly.
+		Stool samples of the same subject are linked against earch other to express that two or many samples belong to
+		a specific subject. By authorizing another hospital the access-granting party is in charge to ensure the access-granted party
+		refers the results to the respective subject. Further the service provides details about laboratories.
+	</description>
+	<paths>
+		<path methods="post" url="http://www.three-s.med/sample/*" params="">
+			<desc>A result will be returned according to a passed identifier.</desc>
+		</path>
+		<path methods="get" url="http://www.three-s.med/laboratories/*" params="">
+			<desc>A list of all participating partner laboratories.</desc>
+		</path>
+		<path methods="post" url="http://www.three-s.med/laboratories/*" params="">
+			<desc>Search for particular laboratories.</desc>
+		</path>
+		<path methods="get" url="http://www.three-s.med/laboratory/*" params="">
+			<desc>View details of a specific laboratory.</desc>
+		</path>
+		<path methods="get post" url="http://www.three-s.med/profile/*" params="">
+			<desc>Obtain and modify the profile of the service user.</desc>
+		</path>
+		<path methods="get post" url="http://www.three-s.med/booking/*" params="">
+			<desc>Obtain the booking page to add or modify the options the service user booked.</desc>
+		</path>
+		<path methods="get post" url="http://www.three-s.med/settings/*" params="">
+			<desc>Modify settings regarding the service.</desc>
+		</path>
+	</paths>
+</service>

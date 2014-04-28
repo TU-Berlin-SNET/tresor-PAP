@@ -1,0 +1,64 @@
+<service id="00001" name="Patient Management System" url="http://www.pms.med">
+	<description>
+		The Patient Management System (PMS) is a central system to manage patients and their treatment during their stay in your 
+		facility. Comfortably organize your patients, their diagnosis, medications and parameters by using the PMS.
+		Archive patients to later review their files when they are retaken to your hospital. Share patients with other 
+		hospitals to obtain a more precise course of their diseases.
+	</description>
+	<paths>
+		<path methods="get" url="http://www.pms.med/patient/*" params="">
+			<desc>View a patients file, his diagnosis, blood pressures, medication and p.r.n. his operations.</desc>
+		</path>
+		<path methods="post" url="http://www.pms.med/patient/*" params="">
+			<desc>Edit a patients file, in case a new diagnosis was made or an operation was ordered.</desc>
+		</path>
+		<path methods="put post" url="http://www.pms.med/bloodpressure/*" params="">
+			<desc>Add or modify a patient's list of blood pressures.</desc>
+		</path>
+		<path methods="put post" url="http://www.pms.med/medication/*" params="">
+			<desc>Add or modify a medicament to a patient's medication.</desc>
+		</path>
+		<path methods="get" url="http://www.pms.med/medicament/*" params="">
+			<desc>Obtain details of a medicament.</desc>
+		</path>
+		<path methods="put post" url="http://www.pms.med/medicament/*" params="">
+			<desc>Add or modify a medicament.</desc>
+		</path>
+		<path methods="get" url="http://www.pms.med/operation/*" params="">
+			<desc>View details of a certain operation.</desc>
+		</path>
+		<path methods="put post" url="http://www.pms.med/operation/*" params="">
+			<desc>Add, modify or cancel an operation.</desc>
+		</path>
+		<path methods="get" url="http://www.pms.med/archive/*" params="">
+			<desc>Search the archive for old patient files.</desc>
+		</path>
+		<path methods="put" url="http://www.pms.med/archive/*" params="">
+			<desc>Archive a patient file.</desc>
+		</path>
+		<path methods="delete" url="http://www.pms.med/patient/*" params="">
+			<desc>Delete a patient's file permanently.</desc>
+		</path>
+		<path methods="delete" url="http://www.pms.med/medicament/*" params="">
+			<desc>Delete a medicament permanently.</desc>
+		</path>
+		<path methods="delete" url="http://www.pms.med/operation/*" params="">
+			<desc>Delete an operation permanently.</desc>
+		</path>
+		<path methods="delete" url="http://www.pms.med/bloodpressure/*" params="">
+			<desc>Delete a blood pressure entry permanently.</desc>
+		</path>
+		<path methods="delete" url="http://www.pms.med/archive/*" params="">
+			<desc>Delete an archive entry permanently.</desc>
+		</path>
+		<path methods="get post" url="http://www.pms.med/profile/*" params="">
+			<desc>Obtain and modify the profile of the service user.</desc>
+		</path>
+		<path methods="get post" url="http://www.pms.med/booking/*" params="">
+			<desc>Obtain the booking page to add or modify the options the service user booked.</desc>
+		</path>
+		<path methods="get post" url="http://www.pms.med/settings/*" params="">
+			<desc>Modify settings regarding the service.</desc>
+		</path>
+	</paths>
+</service>

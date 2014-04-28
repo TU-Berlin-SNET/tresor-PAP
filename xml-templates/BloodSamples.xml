@@ -1,0 +1,24 @@
+<service id="00003" name="Blood Samples Service" url="http://www.bss.med">
+	<description>
+		The Blood Sample Service (BSS) is a broker between laboratories and hospitals or family doctors, providing 
+		a set of laboratories nearly located to the service user. Contact information of each laboratory and working hours
+		will be presented to the service user.
+	</description>
+	<paths>
+		<path methods="get post" url="http://www.bss.med/laboratories/*" params="">
+			<desc>Obtain a list of laboratories in the near of your current place or search for laboratories by name.</desc>
+		</path>
+		<path methods="get" url="http://www.bss.med/laboratory/*" params="">
+			<desc>View a particular laboratory and obtain details of it.</desc>
+		</path>
+		<path methods="get post" url="http://www.bss.med/profile/*" params="">
+			<desc>Obtain and modify the profile of the service user.</desc>
+		</path>
+		<path methods="get post" url="http://www.bss.med/booking/*" params="">
+			<desc>Obtain the booking page to add or modify the options the service user booked.</desc>
+		</path>
+		<path methods="get post" url="http://www.bss.med/settings/*" params="">
+			<desc>Modify settings regarding the service.</desc>
+		</path>
+	</paths>
+</service>

@@ -1,0 +1,30 @@
+<?php
+
+	session_start();
+
+	include("inc/global/globals.inc.php");
+	include(MODEL_PATH."ServiceParser.class.php");
+	include(MODEL_PATH."Action.class.php");
+	include(MODEL_PATH."Connection.class.php");
+	include(MODEL_PATH."User_service_booked.class.php");
+	include(MODEL_PATH."SessionManagement.class.php");
+
+	SessionManagement::sessionCheck();	
+
+	$title = "Choose service";
+	include(TEMPLATE_PATH."system/head.html");
+	
+	$files = ServiceParser::getServicesFiles();
+	$content = "";
+	foreach($files as $key => $value) {
+		$s = new ServiceParser($value);
+		if(User_service_booked::load($_SESSION["enterprise_id"], $s->getIdOfService()) != null )
+			$content .= $s->toHTML();
+	}
+
+	$navigation = "Hello ".$_SESSION["enterprise"];
+	$navigation .= "<a href='logout.html' style='float: right;'>Logout</a>";
+	$navigation .= "<a href='ldap-config.html' style='float: right;'>LDAP config</a>";
+	include(TEMPLATE_PATH."system/main.html");
+	
+?>
