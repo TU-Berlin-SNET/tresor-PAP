@@ -9,72 +9,109 @@
 	include(MODEL_PATH."LdapHelper.class.php");
 	include(MODEL_PATH."Ldap_config.class.php");
 	include(MODEL_PATH."SessionManagement.class.php");
-
-	SessionManagement::sessionCheck();	
+	// include(MODEL_PATH."InstallationManagement.class.php");
+	include(MODEL_PATH."XacmlPdpHandler.class.php");
+	include(MODEL_PATH."XacmlPolicyParser.class.php");
+	require("vendor/autoload.php");
 	
-	$title = "Generate policy";
+	if(isset($_GET["locale"]))
+		include(LOCALE_PATH.$_GET["locale"].".php");
+	else
+		include(LOCALE_PATH."de_DE.php");
+
+	// InstallationManagement::check();
+	SessionManagement::validate();	
+	
+	$title = TITLE_SERVICE_SINGLE;
 	include(TEMPLATE_PATH."system/head.html");
 
 	$s = ServiceParser::getServicebyId($_GET["id"]);
-	if($s == null) die;
 	
+	$type = XacmlPdpHandler::getServicePolicyId($_SESSION["enterprise_id"], $_GET["id"]);
+	$type = $type["type"];
+	if($type == 1)
+		$groups = XacmlPolicyParser::retrieveGroupsFromPolicy($_SESSION["enterprise_id"], $_GET["id"]);
+	else
+		$groups = "";
+		
+	$tabs2 = "";
+	if($s != null)
+		$tabs2 = "<li><a href='#tabs-2'>".TAB_FINE_POLICY."</a></li>";
+
+	$content = "";
+	$content .= sprintf(
+		pfile_get_contents(TEMPLATE_PATH."action.html"),
+		$type,
+		$_GET["id"],
+		htmlentities(json_encode($groups)),
+		$tabs2
+	);
+	
+	/*
 	$ldap_config = Ldap_config::load($_SESSION["enterprise_id"]);
 	if($ldap_config == NULL) {
 		print "<meta http-equiv='refresh' content='0; URL=ldap-config.html'>";
 		die;
 	}
+	*/
 	
-	$l = new LdapHelper(
-		$ldap_config->getLdap_host(),
-		$ldap_config->getLdap_port(),
-		$ldap_config->getLdap_rdn(),
-		$ldap_config->getLdap_password(),
-		$ldap_config->getLdap_search_string()
-	);
-	$roles = $l->getRoles();
-	
-	$content = "";
-	$content .= sprintf(
-		file_get_contents(TEMPLATE_PATH."action.html"),
-		Action::subjectToHTML($roles),
-		Action::timeToHTML()
-	);
-	
-	$content .= sprintf(
-		file_get_contents(TEMPLATE_PATH."action/action-form-start.html"),
-		$_GET["id"],
-		$s->getDescOfService(),
-		$s->getBaseUrlOfService()
-	);
-	
-	$data = array();
-	if(file_exists(DATA_PATH.$_SESSION["enterprise_id"]."_".$_GET["id"]."_policy")) {
-		$data = json_decode(file_get_contents(DATA_PATH.$_SESSION["enterprise_id"]."_".$_GET["id"]."_policy"), true);
-	}
-	
-	foreach($s->getActionsOfService() as $key => $value) {
-		if($data == NULL)
-			$content .= $value->toHTML();
-		else {
-			if(!empty($data["subject"][$key]))
-				$subject = json_encode($data["subject"][$key]);
-			else
-				$subject = "{ roles: [], users: [] }";
-			if(!empty($data["time"][$key]))
-				$time = json_encode($data["time"][$key]);
-			else
-				$time = "{ date: [\"\", \"\"], time: [\"\", \"\"] }";
-			if(!empty($data["location"][$key]))
-				$location = json_encode($data["location"][$key]);
-			else
-				$location = "[]";
-			$content .= $value->toHTML($subject, $time, $location);
+	// Handle if a template file exists
+	if($s != null) {
+		/*
+		$l = new LdapHelper(
+			$ldap_config->getLdap_host(),
+			$ldap_config->getLdap_port(),
+			$ldap_config->getLdap_rdn(),
+			$ldap_config->getLdap_password(),
+			$ldap_config->getLdap_search_string()
+		);
+		$roles = $l->getRoles();
+		*/
+		$roles = array("Doctor", "Nurse");
+		
+		$data = array();
+		if(file_exists(DATA_PATH.$_SESSION["enterprise_id"]."_".$_GET["id"]."_policy")) {
+			$data = json_decode(pfile_get_contents(DATA_PATH.$_SESSION["enterprise_id"]."_".$_GET["id"]."_policy"), true);
 		}
+		
+		$content .= sprintf(
+			pfile_get_contents(TEMPLATE_PATH."action/action-form-start.html"),
+			$_GET["id"],
+			$s->getDescOfService(),
+			$s->getBaseUrlOfService()
+		);
+		
+		foreach($s->getActionsOfService() as $key => $value) {
+			if($data == NULL)
+				$content .= $value->toHTML();
+			else {
+				if(!empty($data["subject"][$key]))
+					$subject = json_encode($data["subject"][$key]);
+				else
+					$subject = "{ roles: [], users: [], idsrc: 'Keine' }";
+				if(!empty($data["time"][$key]))
+					$time = json_encode($data["time"][$key]);
+				else
+					$time = "{ date: [\"\", \"\"], time: [\"\", \"\"] }";
+				if(!empty($data["location"][$key]))
+					$location = json_encode($data["location"][$key]);
+				else
+					$location = "[]";
+				$content .= $value->toHTML($subject, $time, $location);
+			}
+		}
+		$content .= sprintf(
+			pfile_get_contents(TEMPLATE_PATH."action/action-form-end.html"),
+			Action::subjectToHTML($roles),
+			Action::timeToHTML()		
+		);
 	}
-	$content .= file_get_contents(TEMPLATE_PATH."action/action-form-end.html");
-
-	$navigation = "<a href='service-overview.html'>&#x2191; Go back</a>";
-	$navigation .= "<a href='javascript: formSubmit();' style='float: right;' >Generate policy</a>";
+	
+	// TODO: bad practice here
+	$content .= "</div>";
+	
+	$navigation = "<a class='navi' href='service-overview.html'>&#x2191; ".GO_BACK."</a>";
+	$navigation .= "<a class='navi' href='javascript: formSubmit();' style='float: right;' >&#x2192; ".SUBMIT_BUTTON."</a>";
 	include(TEMPLATE_PATH."system/main.html");
 	
 ?>

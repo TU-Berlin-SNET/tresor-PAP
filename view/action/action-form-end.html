@@ -1,1 +1,39 @@
+	</div> <!-- Accordion end -->
 </form>
+</div> <!-- Tabs-2 end -->
+
+<script type="text/JavaScript">
+	$("#accordion").accordion({ active: "false", header: "h4", collapsible: true, heightStyle: "content" });
+</script>
+
+<!-- Colorbox to visualize LDAP entries -->
+<div style="display:none">
+	<div id="ldap-content">
+		%1$s
+	</div>
+</div>
+
+<!-- Colorbox for Time -->
+<div style="display:none">
+	<div id="time-content">
+		%2$s
+	</div>
+</div>
+
+<!-- Colorbox for Location -->
+<div style="display:none">
+	<div id="location-content">
+		<div id="map"></div>
+		<div style="margin: 6px; margin-left: 12px;">
+			<button onClick="void(map.setView([52.5076606533716, 13.234225809574127]));">Paulinenkrankenhaus</button>
+			<button onClick="void(map.setView([52.51297588500511, 13.320185244083405]));">TEL Gebäude</button>
+		</div>
+	</div>
+</div>
+
+<!--
+<applet
+	code="org.tresor.pap.ldap.LdapApplet.class"
+	archive="applet.jar"
+	/>
+-->

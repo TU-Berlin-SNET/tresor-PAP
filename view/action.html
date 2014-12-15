@@ -1,19 +1,25 @@
 <script type="text/JavaScript">
 	var receiverId;
+	var formId;
+	var policyType = %1$s;
+	var defaultPolicies = new Array("AllowAll", "AllowAllFromUsergroup", "DenyAll");
 	
 	// Obtaining the location to set the center of the map to the user's location.
 	if (navigator.geolocation) 
 		navigator.geolocation.getCurrentPosition(success, error);
-	function success(position) { map.setView([position.coords.latitude, position.coords.longitude], 18); }
+	function success(position) { 
+		if(typeof map != 'undefined')
+			map.setView([position.coords.latitude, position.coords.longitude], 18); 
+	}
 	function error(error) { map.setView([51.505, -0.09], 18); }		
 	
 	// A function to load the values from the action's subject field.
 	// Returned will be the values from the action with the Action-ID = receiverId.
 	function loadSubjectInput() {
 		if($("#subject-"+receiverId)[0].value == '')
-			return { roles: [], users: [] };
+			return { roles: [], users: [], idsrc: "Keine" };
 		else
-			return jQuery.parseJSON($("#subject-"+receiverId)[0].value);	
+			return jQuery.parseJSON($("#subject-"+receiverId)[0].value);
 	}
 	
 	// A function to load the values from the action's time field.
@@ -52,7 +58,29 @@
 			entries.users.push(parentNode.childNodes[i].innerHTML);
 		}	
 		$("#subject-"+id)[0].value = JSON.stringify(entries);
-	}	
+		prettyPrintSubjects(entries, id);
+	}
+	
+	function prettyPrintSubjects(entries, id) {
+		$("#pretty-subjects-"+id)[0].innerHTML = "";
+		if(entries.users.length == 0)
+			$("#pretty-subjects-"+id)[0].innerHTML = "<?php print HINT_ALL_USERS_ALLOWED; ?>";
+		for(var i=0; i < entries.users.length; i++) {
+			var prefix = "";
+			var suffix = "";
+			if(i > 0)
+				prefix = ", "
+			if(i == entries.users.length-1) {
+				if(i != 0) {
+					prefix = " & ";
+					suffix = "<?php print HINT_MULTIPLE_USERS_ALLOWED; ?>";
+				}
+				else
+					suffix = "<?php print HINT_SINGLE_USER_ALLOWED; ?>";
+			}
+			$("#pretty-subjects-"+id)[0].innerHTML += prefix + "<b>" + entries.users[i] + "</b>" + suffix;
+		}
+	}
 	
 	// A function to remove a selected user from the selection.
 	// The function implies the execution of updateSubject().
@@ -78,6 +106,47 @@
 				entries.roles.splice(index, 1);
 		}
 		$("#subject-"+id)[0].value = JSON.stringify(entries);
+		prettyPrintRoles(entries, id);
+	}
+	
+	function updateIdSrc(elem, id) {
+		if($("#subject-"+id)[0].value == '')
+			var entries = { roles: [], users: [], idsrc: "Keine" };
+		else
+			var entries = jQuery.parseJSON($("#subject-"+id)[0].value);
+		if(elem.checked == true) {
+			entries.idsrc = elem.value;
+		}
+		$("#subject-"+id)[0].value = JSON.stringify(entries);
+		prettyPrintIdSrc(entries, id);
+	}	
+	
+	function prettyPrintIdSrc(entries, id) {
+		if(typeof entries.idsrc === 'undefined' || entries.idsrc == '')
+			entries.idsrc = "Keine";
+		$("#pretty-idsrc-"+id)[0].innerHTML = "<?php print HINT_AUTH_METHOD; ?>" + "<b>" + entries.idsrc + "</b>.";
+	}
+	
+	function prettyPrintRoles(entries, id) {
+		$("#pretty-roles-"+id)[0].innerHTML = "";
+		if(entries.roles.length == 0)
+			$("#pretty-roles-"+id)[0].innerHTML = "<?php print HINT_ALL_ROLES_ALLOWED; ?>";
+		for(var i=0; i < entries.roles.length; i++) {
+			var prefix = "";
+			var suffix = "";
+			if(i == 0 && entries.roles.length == 1)
+				prefix = "<?php print HINT_PRE_SINGLE_ROLE; ?>";
+			else if(i == 0)
+				var prefix = "<?php print HINT_PRE_MULTI_ROLE; ?>";
+			if(i > 0)
+				prefix = ", "
+			if(i == entries.roles.length-1) {
+				if(i != 0)
+					prefix = " & ";
+				suffix = "<?php print HINT_SUF_ROLES_ALLOWED; ?>";
+			}
+			$("#pretty-roles-"+id)[0].innerHTML += prefix + "<b>" + entries.roles[i] + "</b>" + suffix;
+		}
 	}
 	
 	// A function to update the action's time field.
@@ -153,18 +222,61 @@
 		
 		// Write the array to the action's time field.
 		$("#time-"+id)[0].value = JSON.stringify(array);
-	}	
+		prettyPrintTime(array, id);
+	}
+	
+	function deleteTime(id, type) {
+		var array = loadTimeInput();
+		if(type == 'date') {
+			$("#date-from")[0].value = '';
+			$("#date-to")[0].value = '';
+			array.date = ["",""];
+		}
+		if(type == 'time') {
+			$("#time-from")[0].value = '';
+			$("#time-to")[0].value = '';
+			array.time = ["",""];
+		}
+		$("#time-"+id)[0].value = JSON.stringify(array);
+		prettyPrintTime(array, id);
+	}
+	
+	function prettyPrintTime(entries, id) {
+		if(entries.date[0] == "" && entries.date[1] == "")
+			$("#pretty-date-"+id)[0].innerHTML = "<?php print HINT_ALLOWED_EVERY_DAY; ?>";
+		else
+			$("#pretty-date-"+id)[0].innerHTML = 
+				"<?php print HINT_PRE_TIME; ?>" + "<b>" + entries.date[0] + "</b> " + "<?php print HINT_IN_TIME; ?>" + " <b>" + entries.date[1] + "</b>.";
+		if(entries.time[0] == "" && entries.time[1] == "")
+			$("#pretty-time-"+id)[0].innerHTML = "<?php print HINT_ALLOWED_ALL_HOURS; ?>";
+		else
+			$("#pretty-time-"+id)[0].innerHTML = 
+				"<?php print HINT_PRE_TIME; ?>" + "<b>" + entries.time[0] + "</b> " + "<?php print HINT_IN_TIME; ?>" + " <b>" + entries.time[1] + "</b>.";		
+	}
 	
 	// This statement enables the execution of the containing commands,
 	// when the document is completely loaded.
+	// ### -> bootstrap
 	$(function() {
 	
 		// Initialization of the colorboxes for elements of the class 'inline'
-		$(".inline").colorbox({ inline: true, width: "50%%" });
+		$(".inline").colorbox({ inline: true, width: "50%%", close: "<?php print COLORBOX_CLOSE; ?>" });
 		
 		// Enable auto-complete feature for the subject search field.
 		// Suggestions will be visualized while the user types an uid.
 		$(".subject-auto").autocomplete({ source: [] });
+		$("#subject-search").keyup(function(e) {
+			if(e.which == 13) {
+				if($("#subject-"+receiverId)[0].value.indexOf($(this)[0].value) == -1) {
+					buildSelectedSubject($(this)[0].value);
+					updateGroups($("#groups-selection")[0]);
+				}
+				
+				// Clear the search field.
+				$(this).val(''); 
+					return false;
+			}
+		});
 		
 		// Called when a suggestion has been selected.
 		// The selected suggestion will be written to the action's subject field.
@@ -172,14 +284,124 @@
 			select: function(event, ui) {
 				if($("#subject-"+receiverId)[0].value.indexOf(ui.item.value) == -1) {
 					buildSelectedSubject(ui.item.value);
+					updateGroups($("#groups-selection")[0]);
 				}
 				
 				// Clear the search field.
 				$(this).val(''); 
 					return false;
 			}
-		});		
-	});	
+		});
+
+		$("#tabs").tabs({
+			"create": function(event, ui) {
+				if(policyType < 3) {
+					$("#tabs").tabs( "option", "active", 0);
+					jQuery('input:radio[name="default-policy"]').filter('[value="'+defaultPolicies[policyType]+'"]').attr('checked', 'checked');
+					if(policyType == 1)
+						showUserGroupInput(true);
+						array = jQuery.parseJSON($("#user-groups-json")[0].value);
+						for(var i=0; i < array.length; i++)
+							buildSelectedGroup(array[i]);
+				}
+				else
+					$("#tabs").tabs( "option", "active", 1);
+				var active = $("#tabs").tabs( "option", "active" );
+				if(active == 0)
+					formId = "default-form";
+				if(active == 1)
+					formId = "main-form";
+			},
+			"activate": function(event, ui) {
+				var active = $("#tabs").tabs( "option", "active" );
+				if(active == 0)
+					formId = "default-form";
+				if(active == 1)
+					formId = "main-form";
+			}
+		});
+
+		jQuery('input:radio[name="default-policy"]').on("change", function() {
+			if(jQuery('input:radio[name="default-policy"]:checked').val() == defaultPolicies[1])
+				showUserGroupInput(true);
+			else
+				showUserGroupInput(false);
+		});
+
+		// TODO: source of user groups
+		$("#user-groups-input").autocomplete({"source": []});
+		$("#user-groups-input").keydown(function(e) { 
+			if(e.which == 13)
+				e.preventDefault();
+		});
+		$("#user-groups-input").keypress(function(e) { 
+			if(e.which == 13)
+				e.preventDefault();
+		});
+		$("#user-groups-input").keyup(function(e) {
+			if(e.which == 13) {
+				e.preventDefault();
+				if($("#user-groups-json")[0].value.indexOf($(this)[0].value) == -1) {
+					buildSelectedGroup($(this)[0].value);
+				}
+			
+				// Clear the search field.
+				$(this).val(''); 
+				return false;
+			}
+		});
+
+		$("#user-groups-input").autocomplete({
+			select: function(event, ui) {
+				if($("#user-groups-json")[0].value.indexOf(ui.item.value) == -1) {
+					buildSelectedGroup(ui.item.value);
+				}
+			
+				// Clear the search field.
+				$(this).val(''); 
+				return false;
+			}
+		});
+		
+		$(".navi").button();
+	});		
+
+	function showUserGroupInput(bool) {
+		if(bool) {
+			$("#user-groups-hint")[0].style.display = '';
+			$("#user-groups-input")[0].style.display = '';		
+			$("#groups-selection")[0].style.display = '';		
+		}
+		else {
+			$("#user-groups-hint")[0].style.display = 'none';
+			$("#user-groups-input")[0].style.display = 'none';				
+			$("#groups-selection")[0].style.display = 'none';				
+		}
+	}
+	
+	function buildSelectedGroup(value) {
+		var div = document.createElement("div");
+		div.className = "selected-suggestion";
+		div.innerHTML = value;
+		div.addEventListener('click', function() { removeGroup(this) });
+		$("#groups-selection")[0].appendChild(div);
+		updateGroups(div.parentNode);
+	}
+	
+	function updateGroups(parentNode) {
+		var entries = [];
+		for(var i=0; i < parentNode.childNodes.length; i++) {
+			entries.push(parentNode.childNodes[i].innerHTML);
+		}	
+		$("#user-groups-json")[0].value = JSON.stringify(entries);
+	}
+	
+	function removeGroup(elem) {
+		var parentNode = elem.parentNode;
+		parentNode.removeChild(elem);
+		updateGroups(parentNode);
+	}	
+		
 
 	// A function to prevent a LDAP request when the search field is still empty.
 	// LDAP request are made when the first character has been typed.
@@ -187,7 +409,17 @@
 	function handleRequest(id, value) {
 		if(value == '') return null;
 		else {
-			searchLdapFor(value).done(setResult);
+			// searchLdapFor(value).done(setResult);
+			$(".subject-auto").autocomplete("option", "source", [
+				"MMS\\ERB", 
+				"MMS\\SEHP", 
+				"herz\\JStock", 
+				"pauline\\WBroecker",
+				"herz\\HSanders",
+				"MEDISITE\\AGreszik",
+				"MEDISITE\\TFrank",
+				"ANBIETER\\DAnbieter"
+			]);
 		}
 	}
 	
@@ -214,6 +446,7 @@
 	// On cbox_load the action's subject, time and location field will be loaded.
 	// The colorbox will be transformed to the state in which it had been closed.
 	$(document).bind('cbox_load', function() { 
+		$("#cboxClose").button({text: false});
 		
 		// Load the action's fields.
 		var subject = loadSubjectInput();
@@ -222,9 +455,13 @@
 		
 		// Subject.
 		for(var i=0; i < subject.roles.length; i++)
-			$("input[value="+subject.roles[i]+"]")[0].checked = true;
+			$("input[value='"+subject.roles[i]+"']")[0].checked = true;
 		for(var i=0; i < subject.users.length; i++)
 			buildSelectedSubject(subject.users[i]);
+		if(typeof subject.idsrc === 'undefined' || subject.idsrc === '')
+			$("input[value='Keine']")[0].checked = true;
+		else
+			$("input[value='"+subject.idsrc+"']")[0].checked = true;
 		
 		// Time.
 		$("#date-from")[0].value = time.date[0];
@@ -236,13 +473,23 @@
 		load(location);
 	});
 	
+	function prettyPrintLocation(entries, id) {
+		if(entries.length == 0)
+			$("#pretty-location-"+id)[0].innerHTML = "<?php print HINT_ALLOWED_EVERYWHERE; ?>";
+		else {
+			var suffix = "<?php print HINT_SUF_AREA; ?>";
+			if(entries.length > 1)
+				suffix = "<?php print HINT_SUF_AREAS; ?>";
+			$("#pretty-location-"+id)[0].innerHTML = "<?php print HINT_PRE_ALLOWED_FROM; ?>" + "<b>" + entries.length + "</b> " + suffix;
+		}
+	}
+	
 	// On cbox_complete (the colorbox is presented to the user) invalidate the size of the map. 
 	// Otherwise graphical errors occur.
 	$(document).bind('cbox_complete', function() { 
 		map.invalidateSize(); 
 	});					
 	
-	// On cbox_cleanup clear all fields.
 	$(document).bind('cbox_cleanup', function() { 
 		// Location.
 		reset(receiverId);
@@ -253,6 +500,8 @@
 		// Subject.
 		for(var i=0; i < $("input[name=role]").length; i++)
 			$("input[name=role]")[i].checked = false;
+		for(var i=0; i < $("input[name=identity-source]").length; i++)
+			$("input[name=identity-source]")[i].checked = false;			
 		$("#subject-search")[0].value = '';
 		$("#subject-selection")[0].innerHTML = '';
 		
@@ -264,27 +513,50 @@
 	});
 	
 	function formSubmit() {
-		$("#main-form")[0].submit();
+		console.log(formId);
+		if(formId == "default-form") {
+			if(typeof $('input[name=default-policy]:checked', '#default-form').val() == 'undefined') {
+				alert("<?php print HINT_NO_SELECTION; ?>");
+				return;
+			}
+		}
+		$("#"+formId)[0].submit();
 	}
+	
+	$(document).tooltip({ 
+		track: true, 
+		position: { my: "top+15 bottom-10" }, 
+		show: false, 
+		hide: false 
+	});	
 </script>
 
-<!-- Colorbox to visualize LDAP entries -->
-<div style="display:none">
-	<div id="ldap-content">
-		%1$s
-	</div>
-</div>
+<div id="tabs">
+	<ul>
+		<li><a href="#tabs-1"><?php print DEFAULT_POLICY; ?></a></li>
+		%4$s
+	</ul>
 
-<!-- Colorbox for Time -->
-<div style="display:none">
-	<div id="time-content">
-		%2$s
+	<div id="tabs-1">
+		<form id="default-form" action="control/serviceController.html" method="post" accept-charset="ISO-8859-1">
+			<input type="hidden" name="serviceId" value="%2$s" />
+			<input type="hidden" name="method" value="default-policy" />
+			<div class="box">
+				<span class="action-title"><?php print DEFAULT_POLICY; ?></span>
+				<span class="action-field">
+					<?php print LABEL_ALLOW_ALL; ?>: <input type="radio" name="default-policy" value="AllowAll" />
+				</span>
+				<span class="action-field">
+					<?php print LABEL_ALLOW_GROUP; ?>: <input type="radio" name="default-policy" value="AllowAllFromUsergroup" /><br />
+					<span id="user-groups-hint" style="display: none;"><?php print LABEL_GROUP; ?>:</span>
+					<input id="user-groups-input" type="text" name="user-groups" value="" style="display: none;" />
+					<input id="user-groups-json" type="hidden" name="user-groups-json" value="%3$s" />
+					<div id="groups-selection" style="float: right; display: none;"></div>
+				</span>
+				<span class="action-field">
+					<?php print LABEL_DENY_ALL; ?>: <input type="radio" name="default-policy" value="DenyAll" />
+				</span>
+				<span class="action-bottom"></span>
+			</div>
+		</form>
 	</div>
-</div>
-
-<!-- Colorbox for Location -->
-<div style="display:none">
-	<div id="location-content">
-		<div id="map"></div>
-	</div>
-</div>

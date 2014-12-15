@@ -3,22 +3,16 @@ html, body {
 	padding: 0;
 	background: #e8e8e8;
 	font-family: Tahoma;
+	font-size: 11pt;
 }
 
-a:link,
-a:visited,
-a:focus,
-a:hover {
-	padding-bottom: 10px;
-	text-decoration: none;
-	color: black;
+h1 {
+	font-size: 18pt;
 }
 
-a:hover {
-	color: blue;
+h4 {
+	text-align: left;
 }
-
-
 
 input[type="text"],
 input[type="password"] {
@@ -60,15 +54,16 @@ fieldset {
 
 #navigation #navi-wrapper a {
 	margin-left: 10px;
+	margin-right: 10px;
 }
 
 #content {
 	clear: both;
-	padding: 20px;
+	padding: 10px;
 	text-align: center;
 }
 
-.box {
+.box, div.hint-box {
 	background: white;
 	clear: both;
 	width: 600px;
@@ -113,14 +108,44 @@ fieldset {
 	padding: 10px;
 }
 
+.box .action-title {
+	text-align: center;
+	font-size: 14pt;
+}
+
 .box .action-bottom {
 	border: none;
+	text-align: right;
 }
 
 .box  .box-bottom {
 	display: block;
 	clear: both;
-	text-align: right;
+	text-align: center;
+}
+
+div.hint-box {
+	border: 1px solid;
+	padding: 10px 20px 10px 20px;
+	text-align: left;	
+}
+
+div.info-box {
+	color: #00529B;
+	background-color: #BDE5F8;
+}
+div.success-box {
+	color: #4F8A10;
+	background-color: #DFF2BF;
+}
+div.warning-box {
+	color: #9F6000;
+	background-color: #FEEFB3;
+}
+
+div.error-box {
+	color: #D8000C;
+	background-color: #FFBABA;
 }
 
 .ui-autocomplete {
@@ -144,4 +169,38 @@ fieldset {
 	width: 600px;
 	height: 480px;
 	margin: 0px auto;	
+}
+
+.ui-accordion-header {
+	background: white !important;
+	width: 600px;
+	margin: 0 auto;
+	margin-bottom: 5px;
+	-webkit-box-shadow: 0 2px 1px rgba(0,0,0,0.08);
+	box-shadow: 0 2px 1px rgba(0,0,0,0.08);
+	border-radius: 0;
+	color: black !important;
+	font-weight: normal;
+}
+
+.ui-accordion-content {
+	padding: 20px !important;
+}
+
+div#tabs {
+	width: 700px;
+	margin: 0 auto;
+	margin-bottom: 40px;
+	padding: 0px;
+}
+
+div#tabs-1, div#tabs-2 {
+	margin: 0;
+	padding: 20px;
+}
+
+div#ldap-content,
+div#time-content,
+div#location-content {
+	margin-bottom: 20px;
 }

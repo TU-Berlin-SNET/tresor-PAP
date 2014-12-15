@@ -5,26 +5,73 @@
 	include("inc/global/globals.inc.php");
 	include(MODEL_PATH."ServiceParser.class.php");
 	include(MODEL_PATH."Action.class.php");
-	include(MODEL_PATH."Connection.class.php");
+	// include(MODEL_PATH."Connection.class.php");
 	include(MODEL_PATH."User_service_booked.class.php");
 	include(MODEL_PATH."SessionManagement.class.php");
+	// include(MODEL_PATH."InstallationManagement.class.php");
+	include(MODEL_PATH."XacmlPdpHandler.class.php");
+	include(MODEL_PATH."BrokerHandler.class.php");
+	require("vendor/autoload.php");
+	
+	if(isset($_GET["locale"]))
+		include(LOCALE_PATH.$_GET["locale"].".php");
+	else
+		include(LOCALE_PATH."de_DE.php");
 
-	SessionManagement::sessionCheck();	
+	// InstallationManagement::check();
+	SessionManagement::validate();
+	$session = new SessionManagement();
 
-	$title = "Choose service";
+	$title = TITLE_SERVICE_OVERVIEW;
 	include(TEMPLATE_PATH."system/head.html");
 	
-	$files = ServiceParser::getServicesFiles();
+	$response = BrokerHandler::getBookings($_SESSION["enterprise_id"]);
+	$bookings = BrokerHandler::parseBookings($response["content"]);
 	$content = "";
-	foreach($files as $key => $value) {
-		$s = new ServiceParser($value);
-		if(User_service_booked::load($_SESSION["enterprise_id"], $s->getIdOfService()) != null )
-			$content .= $s->toHTML();
+	
+	$content .= sprintf(
+		pfile_get_contents(TEMPLATE_PATH."service/service-start.html")
+	);	
+	
+	foreach($bookings as $key => $value) {
+		$response = BrokerHandler::getService($value["service_url"]);
+		$service = BrokerHandler::parseService($response["content"]);
+		
+		$policyId = XacmlPdpHandler::getServicePolicyId($_SESSION["enterprise_id"], $service["service_uuid"]);
+		$policyHint = "";
+		switch($policyId["type"]) {
+			case 0:
+				$policyHint = ALLOW_ALL_AT_PDP;
+				break;
+			case 1:
+				$policyHint = ALLOW_GROUP_AT_PDP;
+				break;
+			case 2:
+				$policyHint = DENY_ALL_AT_PDP;
+				break;
+			case 3:
+				$policyHint = FINE_GRAINED_AT_PDP;
+				break;
+		}
+		
+		$content .= sprintf(
+				pfile_get_contents(TEMPLATE_PATH."service.html"), 
+				$service["service_name"], 
+				$service["service_uuid"], 
+				$service["version_uuid"], 
+				$service["status"], 
+				$service["endpoint_url"],
+				$policyHint
+			);		
 	}
+	
+	$content .= sprintf(
+		pfile_get_contents(TEMPLATE_PATH."service/service-end.html")
+	);	
 
-	$navigation = "Hello ".$_SESSION["enterprise"];
-	$navigation .= "<a href='logout.html' style='float: right;'>Logout</a>";
-	$navigation .= "<a href='ldap-config.html' style='float: right;'>LDAP config</a>";
+	$navigation = HELLO." ".$session->getFullName();
+	// $navigation .= "<a href='logout.html' style='float: right;'>Logout</a>";
+	// $navigation .= "<a href='ldap-config.html' style='float: right;'>LDAP config</a>";
 	include(TEMPLATE_PATH."system/main.html");
 	
 ?>

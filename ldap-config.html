@@ -6,8 +6,13 @@
 	include(MODEL_PATH."Connection.class.php");
 	include(MODEL_PATH."SessionManagement.class.php");
 	include(MODEL_PATH."Ldap_config.class.php");
+	// include(MODEL_PATH."InstallationManagement.class.php");
+	require("vendor/autoload.php");
 	
-	SessionManagement::sessionCheck();
+	// InstallationManagement::check();
+	
+	$logger = getLogger(LOGSTASH_LOGGER.".ldap-config");	
+	SessionManagement::validate();
 	
 	if(isset($_POST["ldap_host"])) {
 		$ldap_config = new Ldap_config();
@@ -19,9 +24,12 @@
 			$_POST["ldap_password"],
 			$_POST["ldap_search_string"]
 		);
+		
+		$message = "User ".$_SESSION["enterprise"]." has changed the LDAP configuration.";
+		$logger->addInfo($message, array("category" => "Configuration"));		
 	}
 	
-	$title = "Choose service";
+	$title = "LDAP Configuration";
 	include(TEMPLATE_PATH."system/head.html");
 	
 	$ldap_config = Ldap_config::load($_SESSION["enterprise_id"]);

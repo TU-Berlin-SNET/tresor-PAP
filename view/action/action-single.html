@@ -3,44 +3,56 @@
 		$("#subject-%1$s")[0].value = JSON.stringify(%6$s);
 		$("#time-%1$s")[0].value = JSON.stringify(%7$s);
 		$("#location-%1$s")[0].value = JSON.stringify(%8$s);
+		prettyPrintSubjects(jQuery.parseJSON(JSON.stringify(%6$s)), '%1$s');
+		prettyPrintRoles(jQuery.parseJSON(JSON.stringify(%6$s)), '%1$s');
+		prettyPrintIdSrc(jQuery.parseJSON(JSON.stringify(%6$s)), '%1$s');
+		prettyPrintTime(jQuery.parseJSON(JSON.stringify(%7$s)), '%1$s');
+		prettyPrintLocation(jQuery.parseJSON(JSON.stringify(%8$s)), '%1$s');
+		$(".inline").button({text: false});
 	});
 </script>
+<h4 title="HTTP %4$s on resource %3$s">%2$s</h4>
 <div class="box">
-	<span class="action-title">Action</span>
-	<span class="action-desc">%2$s</span>
+	<span class="action-title">%2$s</span>
 	
-	<!-- Resource -->
+	<!-- Operation and resource -->
 	<span class="action-field">
-		Resource: <input type="text" name="resource[%1$s]" value="%3$s" readonly="readonly" />
+		HTTP <b>%4$s</b> <?php print LABEL_ON_RESOURCE; ?> <b>%3$s</b>
+		<input type="hidden" name="resource[%1$s]" value="%3$s" readonly="readonly" />
+		<input type="hidden" name="methods[%1$s]" value="%4$s" readonly="readonly" />
 	</span>
-	<!-- Methods -->
-	<span class="action-field">Methods: %4$s</span>
 	
 	<!-- Parameters -->
-	<span class="action-field">Parameters: %5$s</span>
+	<!-- <span class="action-field">Parameters: --> %5$s <!-- </span> -->
 	
 	<!-- Subjects -->
 	<span class="action-field">
-		Subjects:
-		<a class="inline" href="#ldap-content" onClick="receiverId = '%1$s';">
-			<input id="subject-%1$s" type="text" name="subject[%1$s]" value="" readonly="readonly" />
-		</a>
+		<span id="pretty-roles-%1$s"></span><br />
+		<span id="pretty-idsrc-%1$s"></span><br />
+		<span id="pretty-subjects-%1$s"></span><br />
+		<div style="text-align: center;">
+			<a class="inline" href="#ldap-content" onClick="receiverId = '%1$s';"><?php print BUTTON_EDIT; ?></a>
+		</div>
+		<input id="subject-%1$s" type="hidden" name="subject[%1$s]" value="" readonly="readonly" />
 	</span>
 	
 	<!-- Time -->
 	<span class="action-field">
-		Time: 
-		<a class="inline" href="#time-content" onClick="receiverId = '%1$s';">
-			<input id="time-%1$s" type="text" name="time[%1$s]" value="" readonly="readonly" />
-		</a>
+		<span id="pretty-date-%1$s"></span><br />
+		<span id="pretty-time-%1$s"></span><br />
+		<div style="text-align: center;">
+			<a class="inline" href="#time-content" onClick="receiverId = '%1$s';"><?php print BUTTON_EDIT; ?></a>
+		</div>
+		<input id="time-%1$s" type="hidden" name="time[%1$s]" value="" readonly="readonly" />
 	</span>
 	
 	<!-- Location -->
 	<span class="action-field">
-		Location: 
-		<a class="inline" href="#location-content" onClick="receiverId = '%1$s';">
-			<input id="location-%1$s" type="text" name="location[%1$s]" value="" readonly="readonly" />
-		</a>
+		<span id="pretty-location-%1$s"></span><br />
+		<div style="text-align: center;">
+			<a class="inline" href="#location-content" onClick="receiverId = '%1$s';"><?php print BUTTON_EDIT; ?></a>
+		</div>
+		<input id="location-%1$s" type="hidden" name="location[%1$s]" value="" readonly="readonly" />
 	</span>
 
 	<span class="action-bottom"></span>

@@ -11,7 +11,7 @@
 			$this->id = uniqid();
 			$this->desc = $desc;
 			$this->resource = $resource;
-			$this->methods = explode(" ", $methods);
+			$this->methods = $methods;
 			$this->params = explode(" ", $params);
 		}
 		
@@ -27,23 +27,11 @@
 			return $this->params;
 		}
 		
-		private function methodsToHTML() {
-			$output = "";
-			foreach($this->methods as $value) {
-				$output .= sprintf (
-					file_get_contents(TEMPLATE_PATH."action/action-method.html"),
-					$value,
-					$this->id
-				);
-			}
-			return $output;
-		}
-		
 		private function paramsToHTML() {
 			$output = "";
 			foreach($this->params as $value) {
 				$output .= sprintf (
-					file_get_contents(TEMPLATE_PATH."action/action-param.html"),
+					pfile_get_contents(TEMPLATE_PATH."action/action-param.html"),
 					$value,
 					$this->id
 				);
@@ -56,42 +44,55 @@
 			foreach($roles as $value) {
 				$value = str_replace(" ", "_", $value);
 				$options .= sprintf (
-					file_get_contents(TEMPLATE_PATH."action/action-role.html"),
+					pfile_get_contents(TEMPLATE_PATH."action/action-role.html"),
 					$value
 				);
 			}
 			return sprintf (
-				file_get_contents(TEMPLATE_PATH."action/action-subject.html"),
-				$options
+				pfile_get_contents(TEMPLATE_PATH."action/action-subject.html"),
+				$options,
+				Action::identitySourceToHTML()
 			);
 		}
 
 		static function timeToHTML() {
 			return sprintf (
-				file_get_contents(TEMPLATE_PATH."action/action-time.html")
+				pfile_get_contents(TEMPLATE_PATH."action/action-time.html")
 			);
 		}
 
 		static function locationToHTML() {
 			return sprintf (
-				file_get_contents(TEMPLATE_PATH."action/action-location.html")
+				pfile_get_contents(TEMPLATE_PATH."action/action-location.html")
 			);
+		}
+		
+		static function identitySourceToHTML() {
+			$output = "";
+			global $identityProvider;
+			foreach($identityProvider as $value)
+				$output .= sprintf (
+					pfile_get_contents(TEMPLATE_PATH."action/action-identity-source.html"),
+					$value,
+					""
+				);
+			return $output;
 		}
 		
 		public function toHTML($subject = NULL, $time = NULL, $location = NULL) {
 			if($subject == NULL)
-				$subject = "{ roles: [], users: [] }";
+				$subject = "{ roles: [], users: [], idsrc: 'Keine' }";
 			if($time == NULL)
 				$time = "{ date: ['',''], time: ['',''] }";
 			if($location == NULL)
 				$location = "[]";
 				
 			return sprintf (
-				file_get_contents(TEMPLATE_PATH."action/action-single.html"),
+				pfile_get_contents(TEMPLATE_PATH."action/action-single.html"),
 				$this->id,
 				$this->desc,
 				$this->resource,
-				$this->methodsToHTML(),
+				$this->methods,
 				$this->paramsToHTML(),
 				$subject,
 				$time,

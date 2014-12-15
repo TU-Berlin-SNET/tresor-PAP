@@ -4,6 +4,12 @@
 			<div id="navi-wrapper"><?php print $navigation; ?></div>
 		</div>
 		<div id="content">
+			<?php if(isset($hint_type) && isset($hint_text)) { ?>
+				<div class="hint-box <?php print $hint_type."-box"; ?>">
+					<?php print $hint_text; ?>
+				</div>
+			<?php } ?>
+			<h1><?php print $title; ?></h1>
 			<?php print $content; ?>
 		</div>
 	</body>

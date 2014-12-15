@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Request 
+	xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17" 
+	xmlns:gml="http://www.opengis.net/gml" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17 http://docs.oasis-open.org/xacml/3.0/xacml-core-v3-schema-wd-17.xsd" 
+	ReturnPolicyIdList="false" 
+	CombinedDecision="false">
+	
+	<Attributes Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject">
+		<Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" IncludeInResult="false">
+			<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MMS\ERB</AttributeValue>
+		</Attribute>
+		<Attribute AttributeId="http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname" IncludeInResult="false">
+			<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MMS\ERB</AttributeValue>
+		</Attribute>
+		<Attribute AttributeId="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name" IncludeInResult="false">
+			<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Erik Baum</AttributeValue>
+		</Attribute>
+		<Attribute AttributeId="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname" IncludeInResult="false">
+			<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Erik</AttributeValue>
+		</Attribute>
+		<Attribute AttributeId="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname" IncludeInResult="false">
+			<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Baum</AttributeValue>
+		</Attribute>
+		<Attribute AttributeId="http://schemas.microsoft.com/ws/2008/06/identity/claims/role" IncludeInResult="false">
+			<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">TRESOR_System_Admin</AttributeValue>
+			<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">TRESOR_MP_Marktplatzbetreiber</AttributeValue>
+		</Attribute>
+		<Attribute AttributeId="http://schemas.tresor.com/claims/2014/04/organization" IncludeInResult="false">
+			<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MMS</AttributeValue>
+		</Attribute>
+	</Attributes>
+	<Attributes Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource">
+		<Attribute AttributeId="http://schemas.tresor.com/request/2014/04/service-uuid" IncludeInResult="false">
+			<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">unknown</AttributeValue>
+		</Attribute>
+		<Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" IncludeInResult="false">
+			<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">http://xacml.snet.tu-berlin.de/?tresor_sso_id=0NixvEo1ABfFWtYMf4nPcQ</AttributeValue>
+		</Attribute>
+	</Attributes>
+	<Attributes Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action">
+		<Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" IncludeInResult="false">
+			<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">get</AttributeValue>
+		</Attribute>
+	</Attributes>
+</Request>

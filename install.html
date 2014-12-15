@@ -1,0 +1,70 @@
+<?php
+
+	include("inc/global/globals.inc.php");
+	include(MODEL_PATH."InstallationManagement.class.php");
+
+	ini_set('display_errors', 1);
+	ini_set('error_reporting', 1);
+	
+	if(empty($_POST) && InstallationManagement::isInstalled())
+		$content = file_get_contents("view/already-installed.html");
+	elseif(empty($_POST) && !InstallationManagement::isInstalled())
+		$content = file_get_contents("view/install.html");
+	elseif(empty($_POST["host"]) || empty($_POST["user"])) {
+		$hint_type = HINT_ERROR;
+		$hint_text = "MySQL host and MySQL user has to be given!";
+		$content = file_get_contents("view/install.html");	
+	}
+	elseif(!($link = mysql_connect($_POST["host"], $_POST["user"], $_POST["password"]))) {
+		$hint_type = HINT_ERROR;
+		$hint_text = "Could not connect to host!";
+		$content = file_get_contents("view/install.html");
+	}
+	else {
+		$f = fopen("inc/global/globals.inc.php", "rb");
+		$text = fread($f, 8096);
+		$modF = str_replace("define(\"DB_HOST\", \"\");", "define(\"DB_HOST\", \"".$_POST["host"]."\");", $text);
+		$modF = str_replace("define(\"DB_USER\", \"\");", "define(\"DB_USER\", \"".$_POST["user"]."\");", $modF);
+		$modF = str_replace("define(\"DB_PASSWORD\", \"\");", "define(\"DB_PASSWORD\", \"".$_POST["password"]."\");", $modF);
+		fclose($f);
+		
+		$f = fopen("inc/global/globals.inc.php", "w+");
+		fwrite($f, $modF);
+		fclose($f);
+		
+		$queries = file_get_contents("inc/install.sql");
+		$queries = str_replace("\r\n", "", $queries);
+		$queries = str_replace("\t", "", $queries);
+		$queries = explode(";", $queries);
+		
+		$output = "";
+		foreach($queries as $key => &$value) {
+			if(empty($value)) continue;
+			if(!mysql_query($value)) {
+				$output .= "<br />ERROR: ".$value."<br />";
+				$output .= "<b>".mysql_error()."</b><br />";
+			}
+			if($key == 0)
+				mysql_select_db(DB_NAME, $link);				
+		}
+		
+		if(empty($output)) {
+			$hint_type = HINT_SUCCESS;
+			$hint_text = "
+				The installation was successful. 
+				Please click <a href='index.html'><b>here</b></a>, to get to the start screen.
+			";
+		}
+		else {
+			$hint_type = HINT_ERROR;
+			$hint_text = $output;
+		}
+	}
+	
+	$title = "Installation";
+	include(TEMPLATE_PATH."system/head.html");
+
+	$navigation = "";
+	include(TEMPLATE_PATH."system/main.html");		
+	
+?>

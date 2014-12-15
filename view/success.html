@@ -1,3 +1,4 @@
+<!--
 <div class="box">
 	<span class="box-head">
 		<span class="service-title">ID: %1$s</span>
@@ -9,10 +10,11 @@
 	<span class="box-bottom">
 	</span>
 </div>
+-->
 <div class="box">
 	<span class="box-head">
-		<span class="service-title">ID: %1$s</span>
-		<span class="service-id">Version: XACMLv3</span>
+		<span class="service-title"><?php print LABEL_POLICY_ID; ?>: %1$s</span>
+		<span class="service-id"><?php print LABEL_POLICY_VERSION; ?>: XACMLv3</span>
 	</span>
 	<span class="service-desc">
 		<pre id="v3" class="brush: xml;">%3$s</pre>
@@ -20,3 +22,10 @@
 	<span class="box-bottom">
 	</span>
 </div>
+<script type="text/JavaScript">
+	
+	$(function() {
+		$(".navi").button();
+	});
+	
+</script>

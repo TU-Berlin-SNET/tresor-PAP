@@ -1,11 +1,50 @@
-<service id="0000x" name="Service A" url="http://www.service-a.tld">
-	<description>Some description</description>
+<service id="cc570ef5-9257-4152-9b2c-2c3632935f66" name="TRESOR Demo" url="">
+	<description>TRESOR Demo</description>
 	<paths>
-		<path methods="get" url="http://www.service-a.tld/sub/*" params="">
-			<desc>Desc of action</desc>
+		<path methods="get" url=".*/.+(.png|.jpg|.css|.js|.gif)$" params="">
+			<desc>External files</desc>
+		</path>				
+		<path methods="get post" url="/($|\?.+$)" params="">
+			<desc>Login/ Logout</desc>
+		</path>			
+		<path methods="get post" url=".*patients.*" params="">
+			<desc>Read/write to patients</desc>
 		</path>
-		<path methods="post" url="http://www.service-a.tld/sub/*" params="">
-			<desc>Desc of other action</desc>
+		<path methods="get post" url=".*illnesses.*" params="">
+			<desc>Read/write to illnesses</desc>
+		</path>
+		<path methods="get post" url=".*medicaments.*" params="">
+			<desc>Read/write to medicaments</desc>
+		</path>
+		<path methods="get post" url=".*conflict_illnesses.*" params="">
+			<desc>Read/write to conflict_illnesses</desc>
+		</path>
+		<path methods="get post" url=".*conflict_meds.*" params="">
+			<desc>Read/write to conflict_meds</desc>
+		</path>
+		<path methods="get post" url=".*services.*" params="">
+			<desc>Read/write to services</desc>
+		</path>
+		<path methods="get post" url=".*barcodes.*" params="">
+			<desc>Read/write to barcodes</desc>
+		</path>
+		<path methods="get post" url=".*users.*" params="">
+			<desc>Read/write to users</desc>
+		</path>
+		<path methods="get post" url=".*blood_pressures.*" params="">
+			<desc>Read/write to blood_pressures</desc>
+		</path>
+		<path methods="get post" url=".*searchfield.*" params="">
+			<desc>Search via barcode</desc>
+		</path>
+		<path methods="get post" url=".*proxy_configurations/1.*" params="">
+			<desc>Read/write to proxy_configurations</desc>
+		</path>
+		<path methods="get post" url=".*broker_configurations/1.*" params="">
+			<desc>Read/write to broker_configurations</desc>
+		</path>
+		<path methods="get post" url=".*site_configurations/1.*" params="">
+			<desc>Read/write to site_configurations</desc>
 		</path>
 	</paths>
 </service>

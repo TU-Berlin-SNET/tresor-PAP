@@ -1,10 +1,11 @@
+<h4><?php print LABEL_SERVICE_NAME; ?>: %1$s</h4>
 <div class="box">
-	<span class="box-head">
-		<span class="service-title">Name: %1$s</span>
-		<span class="service-id">ID: %2$s</span>
-	</span>
-	<span class="service-desc">%3$s</span>
+	<span class="action-field"><?php print LABEL_SERVICE_ID; ?>: %2$s</span>
+	<span class="action-field"><?php print LABEL_VERSION; ?>: %3$s</span>
+	<span class="action-field"><?php print LABEL_STATUS; ?>: %4$s</span>
+	<span class="action-field"><?php print LABEL_URL; ?>: %5$s</span>
+	<span class="action-field" style="border: none;">%6$s</span>
 	<span class="box-bottom">
-		<a href="service-single.html?id=%2$s">Generate policy</a>
+		<a class="inline" href="service-single.html?id=%2$s"><?php print BUTTON_SELECT_SERVICE; ?></a>
 	</span>
 </div>

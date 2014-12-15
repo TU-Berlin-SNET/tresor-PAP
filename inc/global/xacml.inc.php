@@ -37,7 +37,11 @@
 	
 	define("RESOURCE_ID", "urn:oasis:names:tc:xacml:1.0:resource:resource-id");
 	define("ACTION_ID", "urn:oasis:names:tc:xacml:1.0:action:action-id");
+	
 	define("SUBJECT_ID", "urn:oasis:names:tc:xacml:1.0:subject:subject-id");
+	define("SUBJECT_ID_IDM", "org:snet:tresor:attribute:identity-source-idm");
+	define("SUBJECT_ID_SKIDENTITY", "org:snet:tresor:attribute:identity-source-skidentity");
+	
 	define("SUBJECT_ROLE", "urn:oasis:names:tc:xacml:1.0:subject:subject:role");
 	define("CURRENT_TIME", "urn:oasis:names:tc:xacml:1.0:environment:current-time");
 	define("CURRENT_DATE", "urn:oasis:names:tc:xacml:1.0:environment:current-date");

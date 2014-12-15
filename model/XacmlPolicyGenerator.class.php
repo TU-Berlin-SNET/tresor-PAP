@@ -76,7 +76,7 @@
 						$w->writeElement("Description", $serviceDesc);						
 						
 						// Policy target
-						XacmlPolicyGenerator::writePolicyV3Target($w, $serviceUrl, $enterpriseId);
+						XacmlPolicyGenerator::writePolicyV3Target($w, $serviceUrl, $enterpriseId, $serviceId);
 						
 						// Rules
 						foreach($data["resource"] as $key => $value) {
@@ -140,10 +140,11 @@
      * @param <type> $serviceUrl - The service's URL.
      * @return <void>
      */
-		private static function writePolicyV3Target($w, $serviceUrl, $enterpriseId) {
+		private static function writePolicyV3Target($w, $serviceUrl, $enterpriseId, $serviceId) {
 			$w->startElement("Target");
+				/*
 				$w->startElement("AnyOf");
-					$w->startElement("AllOf");
+					$w->startElement("AllOf");					
 						$w->startElement("Match");
 							$w->writeAttribute("MatchId", REGEXP_STRING_MATCH);
 							$w->startElement("AttributeValue");
@@ -161,10 +162,23 @@
 							$w->writeAttribute("MatchId", STRING_EQUAL);
 							$w->startElement("AttributeValue");
 								$w->writeAttribute("DataType", TYPE_STRING);
+								$w->text($serviceId);
+							$w->endElement();
+							$w->startElement("AttributeDesignator");
+								$w->writeAttribute("AttributeId", "service-id");
+								$w->writeAttribute("Category", "urn:oasis:names:tc:xacml:1.0:subject-category:access-subject");
+								$w->writeAttribute("DataType", TYPE_STRING);
+								$w->writeAttribute("MustBePresent", "true");
+							$w->endElement();
+						$w->endElement();						
+						$w->startElement("Match");
+							$w->writeAttribute("MatchId", STRING_EQUAL);
+							$w->startElement("AttributeValue");
+								$w->writeAttribute("DataType", TYPE_STRING);
 								$w->text($enterpriseId);
 							$w->endElement();
 							$w->startElement("AttributeDesignator");
-								$w->writeAttribute("AttributeId", "urn:oasis:names:tc:xacml:1.0:subject:subject-id-qualifier");
+								$w->writeAttribute("AttributeId", "domain-id");
 								$w->writeAttribute("Category", "urn:oasis:names:tc:xacml:1.0:subject-category:access-subject");
 								$w->writeAttribute("DataType", TYPE_STRING);
 								$w->writeAttribute("MustBePresent", "true");
@@ -172,6 +186,7 @@
 						$w->endElement();
 					$w->endElement();
 				$w->endElement();
+				*/
 			$w->endElement();
 		}
 		
@@ -183,70 +198,94 @@
      * @return <void>
      */
 		private static function writeRule($w, $data, $key, $version) {
-			$w->startElement("Rule");
-				$w->writeAttribute("RuleId", $key);
-				$w->writeAttribute("Effect", "Permit");
-				
-				// Rule target
-				if($version == 'V2')
-					XacmlPolicyGenerator::writeRuleV2Target($w, $data, $key);
-				else if($version == 'V3')
-					XacmlPolicyGenerator::writeRuleV3Target($w, $data, $key);
-				
-				// If subjects or time or location has been defined
-				if(!empty($data["subject"][$key]->users) ||
-					!empty($data["subject"][$key]->roles) ||				
-					!empty($data["time"][$key]->time[0]) ||
-					!empty($data["time"][$key]->date[0]) ||
-					!empty($data["location"][$key])) {
+			if(($data["subject"][$key]->idsrc != IDENTITY_SOURCE_NONE) || $key == 0) {			
+				$w->startElement("Rule");
+					$w->writeAttribute("RuleId", $key);
+					$w->writeAttribute("Effect", "Permit");
 					
-					$w->startElement("Condition");
-						$w->startElement("Apply");
-							$w->writeAttribute("FunctionId", L_AND);
-							
-							// Form subjects and roles only into a disjunction if both are setted
-							if(!empty($data["subject"][$key]->users) &&
-								!empty($data["subject"][$key]->roles)) {
-								$w->startElement("Apply");
-									$w->writeAttribute("FunctionId", L_OR);
-							}
-							
-							// If subjects have been defined.
-							if(!empty($data["subject"][$key]->users)) {
-								XacmlPolicyGenerator::writeSubjects($w, $data, $key, $version);
-							}
-							
-							// If roles are defined do this.
-							if(!empty($data["subject"][$key]->roles)) {
-								XacmlPolicyGenerator::writeRoles($w, $data, $key, $version);
-							}
-
-							if(!empty($data["subject"][$key]->users) &&
-								!empty($data["subject"][$key]->roles)) {						
-								$w->endElement();
-							}
-							
-							// If time has been defined, do this.
-							if(!empty($data["time"][$key])) {
-								if(!empty($data["time"][$key]->time[0])) {
-									XacmlPolicyGenerator::writeTime($w, $data, $key, $version);
+					// Rule target
+					if($version == 'V2')
+						XacmlPolicyGenerator::writeRuleV2Target($w, $data, $key);
+					else if($version == 'V3')
+						XacmlPolicyGenerator::writeRuleV3Target($w, $data, $key);		
+						
+						$w->startElement("Condition");
+							$w->startElement("Apply");
+								$w->writeAttribute("FunctionId", L_AND);
+								
+								// Form subjects and roles only into a disjunction if both are setted
+								if(!empty($data["subject"][$key]->users) &&
+									!empty($data["subject"][$key]->roles)) {
+									$w->startElement("Apply");
+										$w->writeAttribute("FunctionId", L_OR);
 								}
 								
-								// If date has been defined, do this.
-								if(!empty($data["time"][$key]->date[0])) {
-									XacmlPolicyGenerator::writeDate($w, $data, $key, $version);
+								// If subjects have been defined.
+								if(!empty($data["subject"][$key]->users)) {
+									XacmlPolicyGenerator::writeSubjects($w, $data, $key, $version);
 								}
-							}
-							
-							// If locations have been defined.
-							if(!empty($data["location"][$key])) {
-								XacmlPolicyGenerator::writeLocation($w, $data, $key, $version);
-							}
-							
-						$w->endElement(); // </Apply>
-					$w->endElement(); // </Condition>
-				}
-			$w->endElement(); // </Rule>
+								
+								if($data["subject"][$key]->idsrc != IDENTITY_SOURCE_IDM &&
+									$data["subject"][$key]->idsrc != IDENTITY_SOURCE_NONE) {
+									
+									$w->startElement("Apply");
+										$w->writeAttribute("FunctionId", "urn:oasis:names:tc:xacml:1.0:function:integer-equal");
+										$w->startElement("Apply");
+											$w->writeAttribute("FunctionId", "urn:oasis:names:tc:xacml:1.0:function:string-bag-size");
+											
+											$w->startElement("AttributeDesignator");
+												if($data["subject"][$key]->idsrc == IDENTITY_SOURCE_HPC)
+													$w->writeAttribute("AttributeId", HPC_ATTRIBUTE);
+												elseif($data["subject"][$key]->idsrc == IDENTITY_SOURCE_NPA)
+													$w->writeAttribute("AttributeId", NPA_ATTRIBUTE);
+												elseif($data["subject"][$key]->idsrc == IDENTITY_SOURCE_EGK)
+													$w->writeAttribute("AttributeId", EGK_ATTRIBUTE);
+												$w->writeAttribute("Category", "urn:oasis:names:tc:xacml:1.0:subject-category:access-subject");							
+												$w->writeAttribute("DataType", TYPE_STRING);
+												$w->writeAttribute("MustBePresent", "true");
+											$w->endElement();				
+											
+										$w->endElement();
+										$w->startElement("AttributeValue");
+											$w->writeAttribute("DataType", "http://www.w3.org/2001/XMLSchema#integer");
+											$w->text("1");
+										$w->endElement();
+										
+									$w->endElement();
+								}
+								
+								
+								// If roles are defined do this.
+								if(!empty($data["subject"][$key]->roles)) {
+									XacmlPolicyGenerator::writeRoles($w, $data, $key, $version);
+								}
+
+								if(!empty($data["subject"][$key]->users) &&
+									!empty($data["subject"][$key]->roles)) {						
+									$w->endElement();
+								}
+								
+								// If time has been defined, do this.
+								if(!empty($data["time"][$key])) {
+									if(!empty($data["time"][$key]->time[0])) {
+										XacmlPolicyGenerator::writeTime($w, $data, $key, $version);
+									}
+									
+									// If date has been defined, do this.
+									if(!empty($data["time"][$key]->date[0])) {
+										XacmlPolicyGenerator::writeDate($w, $data, $key, $version);
+									}
+								}
+								
+								// If locations have been defined.
+								if(!empty($data["location"][$key])) {
+									XacmlPolicyGenerator::writeLocation($w, $data, $key, $version);
+								}
+								
+							$w->endElement(); // </Apply>
+						$w->endElement(); // </Condition>
+				$w->endElement(); // </Rule>
+			}
 		
 		}
 		

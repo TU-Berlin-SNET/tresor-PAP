@@ -38,7 +38,7 @@
     /**
      * A function to retrieve a service by it's ID
      * @param <String> $id - the ID of the desired service
-     * @return <ServiceParser> the requested server if existing else null
+     * @return <ServiceParser> the requested service if existing else null
      */
 		
 		static function getServiceById($id) {
@@ -99,13 +99,14 @@
      * A function to print each service in a box.
      * @return <String> HTML formatted string
      */
-		function toHTML() {
+		function toHTML($policyHint) {
 			return sprintf
 			(
 				file_get_contents(TEMPLATE_PATH."service.html"), 
 					$this->getNameOfService(), 
 					$this->getIdOfService(), 
-					$this->getDescOfService()
+					$this->getDescOfService(),
+					$policyHint
 			);			
 		}
 		

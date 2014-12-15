@@ -1,0 +1,57 @@
+<?php
+
+	define("TITLE_LOGIN", "Login");
+	define("TITLE_SERVICE_OVERVIEW", "Service wählen");
+	define("ALLOW_ALL_AT_PDP", "Eine Standard-Regel ist am PDP hinterlegt, die jedem Benutzer Zugriff gewährt.");
+	define("ALLOW_GROUP_AT_PDP", "Eine Standard-Regel ist am PDP hinterlegt, die spezifischen Benutzergruppen Zugriff gewährt.");
+	define("DENY_ALL_AT_PDP", "Eine Standard-Regel ist am PDP hinterlegt, die keinem Benutzer Zugriff gewährt.");
+	define("FINE_GRAINED_AT_PDP", "Eine benutzerspezifische Regel ist am PDP hinterlegt.");
+	define("TITLE_SERVICE_SINGLE", "Dienstspezifische Aktionsliste");
+	define("TAB_FINE_POLICY", "Benutzerdefinierte Regel");
+	define("SUBMIT_BUTTON", "Regel aktivieren");
+	define("TITLE_SUCCESS", "Regel erfolgreich aktiviert.");
+	define("BUTTON_TO_OVERVIEW", "Zur&uuml;ck");
+	define("HINT_ALL_USERS_ALLOWED", "<b>Alle Benutzer</b> dürfen diese Aktion ausführen.");
+	define("HINT_MULTIPLE_USERS_ALLOWED", " dürfen diese Aktion ausführen.");
+	define("HINT_SINGLE_USER_ALLOWED", " darf diese Aktion ausführen.");
+	define("HINT_AUTH_METHOD", "Benutzer müssen folgende Authentifizierungsmethode benutzen: ");
+	define("HINT_ALL_ROLES_ALLOWED", "<b>Alle Rollen</b> dürfen diese Aktion ausführen.");
+	define("HINT_PRE_SINGLE_ROLE", "Benutzer mit der Rolle ");
+	define("HINT_PRE_MULTI_ROLE", "Benutzer mit einer der Rollen ");
+	define("HINT_SUF_ROLES_ALLOWED", " dürfen diese Aktion ausführen.");
+	define("HINT_ALLOWED_EVERY_DAY", "Diese Aktion darf <b>täglich</b> ausgeführt werden.");
+	define("HINT_PRE_TIME", "Diese Aktion darf ausgeführt werden zwischen ");
+	define("HINT_IN_TIME", "und");
+	define("HINT_ALLOWED_ALL_HOURS", "Diese Aktion kann <b>zu jeder Stunde</b> ausgeführt werden.");
+	define("HINT_ALLOWED_EVERYWHERE", "Diese Aktion kann <b>von überall</b> ausgeführt werden.");
+	define("HINT_PRE_ALLOWED_FROM", "Diese Aktion kann von ");
+	define("HINT_SUF_AREA", "Umgebung ausgeführt werden.");
+	define("HINT_SUF_AREAS", "Umgebungen ausgeführt werden.");
+	define("HINT_NO_SELECTION", "Es wurde keine Auswahl getroffen.");
+	define("DEFAULT_POLICY", "Standard-Regeln");
+	define("LABEL_ALLOW_ALL", "Allen Benutzern erlauben");
+	define("LABEL_ALLOW_GROUP", "Benutzergruppen erlauben");
+	define("LABEL_DENY_ALL", "Allen Benutzern verbieten");
+	define("LABEL_GROUP", "Gruppe");
+	define("BUTTON_SELECT_SERVICE", "Regel erzeugen oder editieren");
+	define("LABEL_SERVICE_NAME", "Service Name");
+	define("LABEL_SERVICE_ID", "Service UUID");
+	define("LABEL_VERSION", "Version UUID");
+	define("LABEL_STATUS", "Status");
+	define("LABEL_URL", "URL");
+	define("LABEL_POLICY_ID", "ID");
+	define("LABEL_POLICY_VERSION", "Version");
+	define("LABEL_ON_RESOURCE", "auf Resource");
+	define("BUTTON_EDIT", "Bearbeiten");
+	define("LABEL_ROLE", "Rolle");
+	define("ID_SRC", "Authentifizierungsmethode");
+	define("LABEL_USER", "Benutzer");
+	define("LABEL_TIME_FRAME", "Zeitfenster (Datum)");
+	define("LABEL_BETWEEN", "Zwischen");
+	define("LABEL_AND", "und");
+	define("LABEL_HOURS", "Zeitenfenster (Stunden)");
+	define("HELLO", "Hallo");
+	define("GO_BACK", "Zur&uuml;ck");
+	define("COLORBOX_CLOSE", "Speichern und schlie&szlig;en");
+	
+?>

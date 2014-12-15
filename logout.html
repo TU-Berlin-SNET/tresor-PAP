@@ -1,7 +1,17 @@
 <?php
 
 	session_start();
+	
+	include("inc/global/globals.inc.php");
+	include(MODEL_PATH."SessionManagement.class.php");
+	require("vendor/autoload.php");
+	
+	$logger = getLogger(LOGSTASH_LOGGER.".logout");
 	session_destroy();
+	
+	$message = "User ".$_SESSION["enterprise"]." has logged out.";
+	$logger->addInfo($message, array("category" => "Authentication"));	
+	
 	print "<meta http-equiv='refresh' content='0; URL=index.html'>";	
 
 ?>

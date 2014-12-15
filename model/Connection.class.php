@@ -2,14 +2,14 @@
 
   class Connection
   {
-    private $server = "localhost";
-    private $database = "pap";
-    private $user = "root";
-    private $pw = "";
+    private $server = DB_HOST;
+    private $database = DB_NAME;
+    private $user = DB_USER;
+    private $pw = DB_PASSWORD;
     private $resource;
   
     function connection() {
-      if(!($this->resource = mysqli_connect($this->server, $this->user, $this->pw, $this->database))) { 
+			if(!($this->resource = mysqli_connect($this->server, $this->user, $this->pw, $this->database))) { 
 				/* hint to the error log */ 
 			} 
     }
