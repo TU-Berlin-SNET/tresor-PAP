@@ -6,7 +6,6 @@
 	include(MODEL_PATH."ServiceParser.class.php");
 	include(MODEL_PATH."Action.class.php");
 	include(MODEL_PATH."SessionManagement.class.php");
-	// include(MODEL_PATH."InstallationManagement.class.php");
 	include(MODEL_PATH."XacmlPdpHandler.class.php");
 	require("vendor/autoload.php");
 	
@@ -14,8 +13,7 @@
 		include(LOCALE_PATH.$_GET["locale"].".php");
 	else
 		include(LOCALE_PATH."de_DE.php");
-	
-	// InstallationManagement::check();
+		
 	SessionManagement::validate();	
 
 	$title = TITLE_SUCCESS;
@@ -32,8 +30,6 @@
 	);
 
 	$navigation = "<a class='navi' href='service-single.html?id=".$_GET["id"]."'>&#x2191;".BUTTON_TO_OVERVIEW."</a>";
-	// $navigation .= "<a href='#v2'>&#x2193; Go to XAVMLv2 policy</a>";
-	// $navigation .= "<a href='#v3'>&#x2193; Go to XAVMLv3 policy</a>";
 	include(TEMPLATE_PATH."system/main.html");
 	
 ?>

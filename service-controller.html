@@ -2,45 +2,23 @@
 
 	session_start();
 	
-	include("../inc/global/globals.inc.php");
-	include("../inc/global/xacml.inc.php");
-	include("../".MODEL_PATH."ServiceParser.class.php");
-	include("../".MODEL_PATH."LdapHelper.class.php");
-	include("../".MODEL_PATH."Connection.class.php");
-	include("../".MODEL_PATH."Ldap_config.class.php");
-	include("../".MODEL_PATH."XacmlPolicyGenerator.class.php");
-	include("../".MODEL_PATH."XacmlPdpHandler.class.php");
-	include("../".MODEL_PATH."XacmlPolicyParser.class.php");
-	include("../".MODEL_PATH."SessionManagement.class.php");
-	// include("../".MODEL_PATH."InstallationManagement.class.php");
-	require("../vendor/autoload.php");
+	include("inc/global/globals.inc.php");
+	include("inc/global/xacml.inc.php");
+	include(MODEL_PATH."ServiceParser.class.php");
+	include(MODEL_PATH."XacmlPolicyGenerator.class.php");
+	include(MODEL_PATH."XacmlPdpHandler.class.php");
+	include(MODEL_PATH."XacmlPolicyParser.class.php");
+	include(MODEL_PATH."SessionManagement.class.php");
+	require("vendor/autoload.php");
 	
 	if(isset($_GET["locale"]))
-		include("../".LOCALE_PATH.$_GET["locale"].".php");
+		include(LOCALE_PATH.$_GET["locale"].".php");
 	else
-		include("../".LOCALE_PATH."de_DE.php");	
+		include(LOCALE_PATH."de_DE.php");	
 	
-	// InstallationManagement::check();
-	
-	$logger = getLogger(LOGSTASH_LOGGER.".serviceController");
+	$logger = getLogger(LOGSTASH_LOGGER.".service-controller");
 	SessionManagement::validate();	
 	$session = new SessionManagement();
-
-	if(isset($_POST["method"]) && isset($_POST["param"])) {
-		$ldap_config = Ldap_config::load($_SESSION["enterprise_id"]);		
-		
-		$l = new LdapHelper(
-			$ldap_config->getLdap_host(),
-			$ldap_config->getLdap_port(),
-			$ldap_config->getLdap_rdn(),
-			$ldap_config->getLdap_password(),
-			$ldap_config->getLdap_search_string()
-		);
-		$people = $l->getPeopleByUid($_POST["param"]);
-		if(!empty($people)) {
-			print json_encode($people);
-		}
-	}
 	
 	if(isset($_POST) && !isset($_POST["method"])) {
 
@@ -54,12 +32,11 @@
 		// Serialize the data  to prevent excessive parsing of long XACML policies.
 		$_POST["resource"] = array_values($_POST["resource"]);
 		$_POST["methods"] = array_values($_POST["methods"]);
-		$_POST["params"] = array_values($_POST["params"]);
 		$_POST["subject"] = array_values($_POST["subject"]);
 		$_POST["time"] = array_values($_POST["time"]);
 		$_POST["location"] = array_values($_POST["location"]);
 		
-		$f = fopen("../".DATA_PATH.$_SESSION["enterprise_id"]."_".$_POST["serviceId"]."_policy", "w+");
+		$f = fopen(DATA_PATH.$_SESSION["enterprise_id"]."_".$_POST["serviceId"]."_policy", "w+");
 		fwrite($f, json_encode($_POST));
 		fclose($f);
 		
@@ -81,7 +58,7 @@
 
 		// Generate policy.
 		XacmlPolicyGenerator::generateV3Policy(
-			"../".POLICY_PATH.$_SESSION["enterprise_id"]."_".$_POST["serviceId"]."_XACMLV3_policy.xml", 
+			POLICY_PATH.$_SESSION["enterprise_id"]."_".$_POST["serviceId"]."_XACMLV3_policy.xml", 
 			$_POST, $_POST["serviceId"], 
 			$_POST["serviceDesc"], 
 			$_POST["serviceUrl"], 
@@ -92,10 +69,10 @@
 			$_SESSION["enterprise_id"],
 			$_POST["serviceId"], 
 			file_get_contents(
-				"../".POLICY_PATH.$_SESSION["enterprise_id"]."_".$_POST["serviceId"]."_XACMLV3_policy.xml"
+				POLICY_PATH.$_SESSION["enterprise_id"]."_".$_POST["serviceId"]."_XACMLV3_policy.xml"
 			));
 		$logger->addInfo("User ".$session->getId()." (Domain: ".$_SESSION["enterprise_id"].") successfully uploaded a fine-grained policy for service ".$_POST["serviceId"].".", array("category" => "Policy upload"));
-		print "<meta http-equiv='refresh' content='0; URL=../success.html?id=".$_POST["serviceId"]."'>";
+		print "<meta http-equiv='refresh' content='0; URL=success.html?id=".$_POST["serviceId"]."'>";
 	}
 	
 	if(isset($_POST["method"]) && !isset($_POST["param"])) {
@@ -104,7 +81,7 @@
 			$policy = $parser->generateAllowAllFromUsergroup(json_decode($_POST["user-groups-json"]));
 		}
 		else
-			$policy = file_get_contents("../".POLICY_PATH.$_POST["default-policy"].".xml");
+			$policy = file_get_contents(POLICY_PATH.$_POST["default-policy"].".xml");
 	
 		XacmlPdpHandler::putServicePolicy(
 			$_SESSION["enterprise_id"],
@@ -112,7 +89,7 @@
 			$policy
 			);
 		$logger->addInfo("User ".$session->getId()." (Domain: ".$_SESSION["enterprise_id"].") successfully uploaded default policy ".$_POST["default-policy"]." for service ".$_POST["serviceId"].".", array("category" => "Policy upload"));			
-		print "<meta http-equiv='refresh' content='0; URL=../success.html?id=".$_POST["serviceId"]."'>";
+		print "<meta http-equiv='refresh' content='0; URL=success.html?id=".$_POST["serviceId"]."'>";
 	}
 
 ?>

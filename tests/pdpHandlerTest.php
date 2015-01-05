@@ -10,8 +10,8 @@
 </style>
 <?php
 
-	include("inc/global/globals.inc.php");
-	include(MODEL_PATH."XacmlPdpHandler.class.php");
+	include("../inc/global/globals.inc.php");
+	include("../".MODEL_PATH."XacmlPdpHandler.class.php");
 	
 	print "
 		<table cellpadding='0' cellspacing='0'>
@@ -26,7 +26,7 @@
 	";
 	
 	// Retrieve a decision from the PDP
-	$response = XacmlPdpHandler::xacmlRequest(file_get_contents("requests/example_request.xml"));
+	$response = XacmlPdpHandler::xacmlRequest(file_get_contents("../requests/example_request.xml"));
 	print "
 		<tr>
 			<td>Retrieve a decision from the PDP</td>
@@ -56,7 +56,7 @@
 	";
 	
 	// Put a policy
-	$response = XacmlPdpHandler::putServicePolicy("MMS", "unknown", file_get_contents("policies/example_policy.xml"));
+	$response = XacmlPdpHandler::putServicePolicy("MMS", "unknown", file_get_contents("../policies/example_policy.xml"));
 	print "
 		<tr>
 			<td>Put a policy</td>
@@ -75,7 +75,7 @@
 		</tr>
 	";
 	
-	XacmlPdpHandler::putServicePolicy("MMS", "unknown", file_get_contents("policies/example_policy.xml"));
+	XacmlPdpHandler::putServicePolicy("MMS", "unknown", file_get_contents("../policies/example_policy.xml"));
 	
 	print "</tbody></table>";
 

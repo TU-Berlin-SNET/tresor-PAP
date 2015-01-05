@@ -3,13 +3,14 @@
 	session_start();
 
 	include("inc/global/globals.inc.php");
-	include(MODEL_PATH."Connection.class.php");
-	include(MODEL_PATH."User.class.php");
 	include(MODEL_PATH."SessionManagement.class.php");
-	// include(MODEL_PATH."InstallationManagement.class.php");
 	require("vendor/autoload.php");
 	
-	// InstallationManagement::check();
+	if(isset($_GET["locale"]))
+		include(LOCALE_PATH.$_GET["locale"].".php");
+	else
+		include(LOCALE_PATH."de_DE.php");	
+	
 	$session = new SessionManagement();
 	$logger = getLogger(LOGSTASH_LOGGER.".index");
 	
@@ -27,38 +28,11 @@
 		print "<meta http-equiv='refresh' content='0; URL=service-overview.html'>";
 		die;
 	}
-	/**
-	 * Case no Single-Sign-On
-	 */
-	else {
-		if(isset($_POST["enterprise"]) && isset($_POST["password"])) {
-			$user = User::loadByName($_POST["enterprise"]);
-			if($user != NULL) {
-				if(crypt($_POST["password"], substr($user->getPassword(), 0, 41)) == $user->getPassword()) {
-					
-					// TODO: dynamic enterprise_id
-					$_SESSION["enterprise_id"] = "92707293-e2e9-4d09-bad1-5c37bdfd0b09";
-					$_SESSION["enterprise"] = "MMS";
-					$_SESSION["time"] = time();
-					
-					$message = "User ".$_POST["enterprise"]." authenticated at the PAP using the login form.";
-					// $logger->addInfo($message, array("category" => "Authentication"));
-					
-					print "<meta http-equiv='refresh' content='0; URL=service-overview.html'>";
-					die;
-					}
-				else {
-				}
-			}
-			else {
-			}
-		}
-	}
 
 	$title = TITLE_LOGIN;
 	include(TEMPLATE_PATH."system/head.html");
 	
-	$content = file_get_contents(TEMPLATE_PATH."login.html");
+	$content = file_get_contents(TEMPLATE_PATH."frontpage.html");
 
 	$navigation = "";
 	include(TEMPLATE_PATH."system/main.html");	

@@ -88,28 +88,12 @@
 			$actions = array();
 			foreach($this->xml->paths->path as $value) {
 				foreach(explode(" ", $value->attributes()->methods) as $method) {
-					$a = new Action($value->desc, $value->attributes()->url, $method, $value->attributes()->params);
+					$a = new Action($value->desc, $value->attributes()->url, $method);
 					$actions[] = $a;
 				}
 			}
 			return $actions;
 		}
-		
-    /**
-     * A function to print each service in a box.
-     * @return <String> HTML formatted string
-     */
-		function toHTML($policyHint) {
-			return sprintf
-			(
-				file_get_contents(TEMPLATE_PATH."service.html"), 
-					$this->getNameOfService(), 
-					$this->getIdOfService(), 
-					$this->getDescOfService(),
-					$policyHint
-			);			
-		}
-		
 	}
 
 ?>

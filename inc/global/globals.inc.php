@@ -19,18 +19,6 @@
    */
 	define("THESIS_TITLE", "Policy Administration Point");
 	
-	/**
-	 * DO NOT TOUCH THIS! NEVER!
-	 */
-	define("DB_HOST", "localhost");
-	define("DB_USER", "root");
-	define("DB_PASSWORD", "STudENTxacml");
-	define("DB_NAME", "tresor_papdb");
-	
-	define("TABLE_USER", "user");
-	define("TABLE_LDAP_CONFIG", "ldap_config");
-	define("TABLE_USER_SERVICE_BOOKED", "user_service_booked");
-	
 	define("HINT_SUCCESS", "success");
 	define("HINT_INFO", "info");
 	define("HINT_WARNING", "warning");

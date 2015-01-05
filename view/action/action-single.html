@@ -1,13 +1,13 @@
 <script type="text/JavaScript">
 	$(function() {
-		$("#subject-%1$s")[0].value = JSON.stringify(%6$s);
-		$("#time-%1$s")[0].value = JSON.stringify(%7$s);
-		$("#location-%1$s")[0].value = JSON.stringify(%8$s);
-		prettyPrintSubjects(jQuery.parseJSON(JSON.stringify(%6$s)), '%1$s');
-		prettyPrintRoles(jQuery.parseJSON(JSON.stringify(%6$s)), '%1$s');
-		prettyPrintIdSrc(jQuery.parseJSON(JSON.stringify(%6$s)), '%1$s');
-		prettyPrintTime(jQuery.parseJSON(JSON.stringify(%7$s)), '%1$s');
-		prettyPrintLocation(jQuery.parseJSON(JSON.stringify(%8$s)), '%1$s');
+		$("#subject-%1$s")[0].value = JSON.stringify(%5$s);
+		$("#time-%1$s")[0].value = JSON.stringify(%6$s);
+		$("#location-%1$s")[0].value = JSON.stringify(%7$s);
+		prettyPrintSubjects(jQuery.parseJSON(JSON.stringify(%5$s)), '%1$s');
+		prettyPrintRoles(jQuery.parseJSON(JSON.stringify(%5$s)), '%1$s');
+		prettyPrintIdSrc(jQuery.parseJSON(JSON.stringify(%5$s)), '%1$s');
+		prettyPrintTime(jQuery.parseJSON(JSON.stringify(%6$s)), '%1$s');
+		prettyPrintLocation(jQuery.parseJSON(JSON.stringify(%7$s)), '%1$s');
 		$(".inline").button({text: false});
 	});
 </script>
@@ -21,9 +21,6 @@
 		<input type="hidden" name="resource[%1$s]" value="%3$s" readonly="readonly" />
 		<input type="hidden" name="methods[%1$s]" value="%4$s" readonly="readonly" />
 	</span>
-	
-	<!-- Parameters -->
-	<!-- <span class="action-field">Parameters: --> %5$s <!-- </span> -->
 	
 	<!-- Subjects -->
 	<span class="action-field">

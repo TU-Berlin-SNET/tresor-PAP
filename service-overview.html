@@ -5,10 +5,7 @@
 	include("inc/global/globals.inc.php");
 	include(MODEL_PATH."ServiceParser.class.php");
 	include(MODEL_PATH."Action.class.php");
-	// include(MODEL_PATH."Connection.class.php");
-	include(MODEL_PATH."User_service_booked.class.php");
 	include(MODEL_PATH."SessionManagement.class.php");
-	// include(MODEL_PATH."InstallationManagement.class.php");
 	include(MODEL_PATH."XacmlPdpHandler.class.php");
 	include(MODEL_PATH."BrokerHandler.class.php");
 	require("vendor/autoload.php");
@@ -18,7 +15,6 @@
 	else
 		include(LOCALE_PATH."de_DE.php");
 
-	// InstallationManagement::check();
 	SessionManagement::validate();
 	$session = new SessionManagement();
 
@@ -55,7 +51,7 @@
 		}
 		
 		$content .= sprintf(
-				pfile_get_contents(TEMPLATE_PATH."service.html"), 
+				pfile_get_contents(TEMPLATE_PATH."service/service-single.html"), 
 				$service["service_name"], 
 				$service["service_uuid"], 
 				$service["version_uuid"], 
@@ -70,8 +66,6 @@
 	);	
 
 	$navigation = HELLO." ".$session->getFullName();
-	// $navigation .= "<a href='logout.html' style='float: right;'>Logout</a>";
-	// $navigation .= "<a href='ldap-config.html' style='float: right;'>LDAP config</a>";
 	include(TEMPLATE_PATH."system/main.html");
 	
 ?>

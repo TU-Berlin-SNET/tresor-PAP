@@ -4,12 +4,8 @@
 
 	include("inc/global/globals.inc.php");
 	include(MODEL_PATH."ServiceParser.class.php");
-	include(MODEL_PATH."Connection.class.php");
 	include(MODEL_PATH."Action.class.php");
-	include(MODEL_PATH."LdapHelper.class.php");
-	include(MODEL_PATH."Ldap_config.class.php");
 	include(MODEL_PATH."SessionManagement.class.php");
-	// include(MODEL_PATH."InstallationManagement.class.php");
 	include(MODEL_PATH."XacmlPdpHandler.class.php");
 	include(MODEL_PATH."XacmlPolicyParser.class.php");
 	require("vendor/autoload.php");
@@ -19,7 +15,6 @@
 	else
 		include(LOCALE_PATH."de_DE.php");
 
-	// InstallationManagement::check();
 	SessionManagement::validate();	
 	
 	$title = TITLE_SERVICE_SINGLE;
@@ -40,34 +35,15 @@
 
 	$content = "";
 	$content .= sprintf(
-		pfile_get_contents(TEMPLATE_PATH."action.html"),
+		pfile_get_contents(TEMPLATE_PATH."action/action-start.html"),
 		$type,
 		$_GET["id"],
 		htmlentities(json_encode($groups)),
 		$tabs2
 	);
 	
-	/*
-	$ldap_config = Ldap_config::load($_SESSION["enterprise_id"]);
-	if($ldap_config == NULL) {
-		print "<meta http-equiv='refresh' content='0; URL=ldap-config.html'>";
-		die;
-	}
-	*/
-	
-	// Handle if a template file exists
 	if($s != null) {
-		/*
-		$l = new LdapHelper(
-			$ldap_config->getLdap_host(),
-			$ldap_config->getLdap_port(),
-			$ldap_config->getLdap_rdn(),
-			$ldap_config->getLdap_password(),
-			$ldap_config->getLdap_search_string()
-		);
-		$roles = $l->getRoles();
-		*/
-		$roles = array("Doctor", "Nurse");
+		$roles = array("Role 1", "Role 2", "Role 3");
 		
 		$data = array();
 		if(file_exists(DATA_PATH.$_SESSION["enterprise_id"]."_".$_GET["id"]."_policy")) {
@@ -97,21 +73,66 @@
 					$location = json_encode($data["location"][$key]);
 				else
 					$location = "[]";
-				$content .= $value->toHTML($subject, $time, $location);
+				$content .= toHTML($value, $subject, $time, $location);
 			}
 		}
+		
+		$identitySource = "";
+		foreach($identityProvider as $value)
+			$identitySource .= sprintf(
+				pfile_get_contents(TEMPLATE_PATH."action/action-identity-source.html"),
+				$value
+			);		
+		
 		$content .= sprintf(
 			pfile_get_contents(TEMPLATE_PATH."action/action-form-end.html"),
-			Action::subjectToHTML($roles),
-			Action::timeToHTML()		
+			subjectToHTML($roles, $identitySource),
+			pfile_get_contents(TEMPLATE_PATH."action/action-time.html")
 		);
 	}
 	
-	// TODO: bad practice here
-	$content .= "</div>";
+	$content .= sprintf(
+			pfile_get_contents(TEMPLATE_PATH."action/action-end.html")
+	);
 	
 	$navigation = "<a class='navi' href='service-overview.html'>&#x2191; ".GO_BACK."</a>";
 	$navigation .= "<a class='navi' href='javascript: formSubmit();' style='float: right;' >&#x2192; ".SUBMIT_BUTTON."</a>";
 	include(TEMPLATE_PATH."system/main.html");
+		
+	function toHTML($action, $subject = NULL, $time = NULL, $location = NULL) {
+		if($subject == NULL)
+			$subject = "{ roles: [], users: [], idsrc: 'Keine' }";
+		if($time == NULL)
+			$time = "{ date: ['',''], time: ['',''] }";
+		if($location == NULL)
+			$location = "[]";
+			
+		return sprintf(
+			pfile_get_contents(TEMPLATE_PATH."action/action-single.html"),
+			$action->getID(),
+			$action->getDesc(),
+			$action->getResource(),
+			$action->getMethods(),
+			$subject,
+			$time,
+			$location
+		);
+	}
+	
+	function subjectToHTML($roles, $identitySource) {
+		$options = "";
+		foreach($roles as $value) {
+			$value = str_replace(" ", "_", $value);
+			$options .= sprintf (
+				pfile_get_contents(TEMPLATE_PATH."action/action-role.html"),
+				$value
+			);
+		}
+		return sprintf (
+			pfile_get_contents(TEMPLATE_PATH."action/action-subject.html"),
+			$options,
+			$identitySource
+		);
+	}
 	
 ?>

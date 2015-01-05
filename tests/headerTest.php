@@ -10,8 +10,8 @@
 </style>
 <?php
 
-	include("inc/global/globals.inc.php");
-	include(MODEL_PATH."SessionManagement.class.php");
+	include("../inc/global/globals.inc.php");
+	include("../".MODEL_PATH."SessionManagement.class.php");
 
 	print "
 		<table cellpadding='0' cellspacing='0'>

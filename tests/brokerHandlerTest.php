@@ -10,8 +10,8 @@
 </style>
 <?php
 
-	include("inc/global/globals.inc.php");
-	include(MODEL_PATH."BrokerHandler.class.php");
+	include("../inc/global/globals.inc.php");
+	include("../".MODEL_PATH."BrokerHandler.class.php");
 	
 	print "
 		<table cellpadding='0' cellspacing='0'>
