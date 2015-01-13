@@ -1,17 +1,16 @@
 <?php
 
 	class BrokerHandler {
-		public static $url = "http://tresor-dev-broker.snet.tu-berlin.de/";
+		public static $broker_headers = array();
+
+		public static $url = BROKER_URL;
 
 		public static function getBookings($clientId) {
 			$ch = curl_init(BrokerHandler::$url."/clients/".$clientId."/bookings");
 			
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET"); 
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-				"Accept: application/xml",
-				"Authorization : Basic dHJlc29yOjEzczFiM2Q="
-			));			
+			curl_setopt($ch, CURLOPT_HTTPHEADER, self::$broker_headers);
 			 
 			$response = curl_exec($ch);
 			$info = curl_getinfo($ch);
@@ -39,10 +38,7 @@
 			
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET"); 
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-				"Accept: application/xml",
-				"Authorization : Basic dHJlc29yOjEzczFiM2Q="
-			));			
+			curl_setopt($ch, CURLOPT_HTTPHEADER, self::$broker_headers);
 			 
 			$response = curl_exec($ch);
 			$info = curl_getinfo($ch);
@@ -77,4 +73,9 @@
 	
 	}
 
+	BrokerHandler::$broker_headers[] = "Accept: application/xml";
+
+	if (defined("BROKER_USERPWD")) {
+		BrokerHandler::$broker_headers[] = "Authorization : Basic ".base64_encode(BROKER_USERPWD);
+	}
 ?>

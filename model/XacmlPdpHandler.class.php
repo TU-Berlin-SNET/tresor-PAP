@@ -1,7 +1,7 @@
 <?php
 
 	class XacmlPdpHandler {
-		public static $url = "http://xacml.snet.tu-berlin.de:9090";
+		public static $url = PDP_URL;
 	
     /**
      * Perform XACML request and receive the response.

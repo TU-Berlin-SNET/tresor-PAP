@@ -1,6 +1,12 @@
 <?php
 
   /**
+   * Load overwrites
+   */
+	if(realpath(dirname(__FILE__).'/overwrites.inc.php'))
+		include 'overwrites.inc.php';
+
+  /**
    * Global paths
    */
 	define("BASE_URL", "http://pap.service.cloud-tresor.de/");
@@ -73,7 +79,6 @@
   /**
    * Logstash constants
    */	
-	define("LOGSTASH_URL", "xacml.snet.tu-berlin.de:9400");
 	define("LOGSTASH_LOGGER", "org.snet.tresor-pap");
 	define("LOGSTASH_ERROR", "ERROR");
 	define("LOGSTASH_WARN", "WARN");
@@ -81,12 +86,22 @@
 	define("LOGSTASH_DEBUG", "DEBUG");
 	define("LOGSTASH_TRACE", "TRACE");
 	define("LOGSTASH_TRESOR_COMPONENT", "PAP");
-	
+
+  /**
+   * Broker constants
+   */
+   	define("BROKER_URL", "http://tresor-dev-broker.snet.tu-berlin.de/");
+
+  /**
+   * PDP constants
+   */
+   	define("PDP_URL", "http://xacml.snet.tu-berlin.de:9090");
+
   /**
    * Global settings
    */
 	ini_set('display_errors', 1);
-	
+
 	use Monolog\Logger;
 	use Monolog\Formatter\LogstashFormatter;
 	use Monolog\Formatter\JsonFormatter;
@@ -94,15 +109,19 @@
 	
 	function getLogger($loggerName) {
 		$logger = new Logger($loggerName);
-		$handler = new SocketHandler(LOGSTASH_URL);
-		$handler->setPersistent(true);
-		$logger->pushHandler($handler, Logger::DEBUG);
-		$logger->pushProcessor(function ($record) {
-			$record["extra"] = generateLogRecord($record["level_name"], $record["channel"]);
-			return $record;
-		});
-		$formatter = new LogstashFormatter($logger->getName(), null, 	null, "", LogstashFormatter::V1);
-		$handler->setFormatter($formatter);	
+
+		if(defined("LOGSTASH_URL")) {
+			$handler = new SocketHandler(LOGSTASH_URL);
+			$handler->setPersistent(true);
+			$logger->pushHandler($handler, Logger::DEBUG);
+			$logger->pushProcessor(function ($record) {
+				$record["extra"] = generateLogRecord($record["level_name"], $record["channel"]);
+				return $record;
+			});
+			$formatter = new LogstashFormatter($logger->getName(), null, 	null, "", LogstashFormatter::V1);
+			$handler->setFormatter($formatter);
+		}
+
 		return $logger;
 	}
 	
