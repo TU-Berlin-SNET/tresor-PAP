@@ -2,7 +2,21 @@
 	var receiverId;
 	var formId;
 	var policyType = %1$s;
-	var defaultPolicies = new Array("AllowAll", "AllowAllFromUsergroup", "DenyAll");
+	var fineGrained = %4$s;
+	var defaultPolicies = new Array(
+		"<?php print POLICY_ALLOW_ALL; ?>", 
+		"<?php print POLICY_ALLOW_ALL_GROUP; ?>", 
+		"<?php print POLICY_DENY_ALL; ?>"
+	);
+	var daysOfWeek = new Array(
+		"<?php print LABEL_MONDAY; ?>",
+		"<?php print LABEL_TUESDAY; ?>",
+		"<?php print LABEL_WEDNESDAY; ?>",
+		"<?php print LABEL_THURSDAY; ?>",
+		"<?php print LABEL_FRIDAY; ?>",
+		"<?php print LABEL_SATURDAY; ?>",
+		"<?php print LABEL_SUNDAY; ?>"
+	);
 	
 	// Obtaining the location to set the center of the map to the user's location.
 	if (navigator.geolocation) 
@@ -13,11 +27,15 @@
 	}
 	function error(error) { map.setView([51.505, -0.09], 18); }		
 	
+	function submitResults(results) {
+		$(".subject-auto").autocomplete("option", "source", jQuery.parseJSON(results));
+	}	
+	
 	// A function to load the values from the action's subject field.
 	// Returned will be the values from the action with the Action-ID = receiverId.
 	function loadSubjectInput() {
 		if($("#subject-"+receiverId)[0].value == '')
-			return { roles: [], users: [], idsrc: "Keine" };
+			return { roles: [], users: [], idsrc: "" };
 		else
 			return jQuery.parseJSON($("#subject-"+receiverId)[0].value);
 	}
@@ -26,7 +44,7 @@
 	// Similar to loadSubjectInput()
 	function loadTimeInput() {
 		if($("#time-"+receiverId)[0].value == '')
-			return { date: ["",""], time: ["",""] };
+			return { weekday: [], date: ["",""], time: ["",""] };
 		else
 			return jQuery.parseJSON($("#time-"+receiverId)[0].value);	
 	}	
@@ -111,7 +129,7 @@
 	
 	function updateIdSrc(elem, id) {
 		if($("#subject-"+id)[0].value == '')
-			var entries = { roles: [], users: [], idsrc: "Keine" };
+			var entries = { roles: [], users: [], idsrc: "" };
 		else
 			var entries = jQuery.parseJSON($("#subject-"+id)[0].value);
 		if(elem.checked == true) {
@@ -123,7 +141,7 @@
 	
 	function prettyPrintIdSrc(entries, id) {
 		if(typeof entries.idsrc === 'undefined' || entries.idsrc == '')
-			entries.idsrc = "Keine";
+			entries.idsrc = "<?php print IDENTITY_SOURCE_NONE; ?>";
 		$("#pretty-idsrc-"+id)[0].innerHTML = "<?php print HINT_AUTH_METHOD; ?>" + "<b>" + entries.idsrc + "</b>.";
 	}
 	
@@ -219,6 +237,13 @@
 				array.time.push($("#time-from")[0].value, $("#time-to")[0].value);
 			}
 		}
+		else if(elem.type == "checkbox") {
+			var entries = $("input[name='weekday']:checked");
+			array.weekday = [];
+			for(var i=0; i < entries.length; i++) {
+				array.weekday.push(entries[i].value);
+			}
+		}
 		
 		// Write the array to the action's time field.
 		$("#time-"+id)[0].value = JSON.stringify(array);
@@ -242,11 +267,35 @@
 	}
 	
 	function prettyPrintTime(entries, id) {
+		// Weekday
+		$("#pretty-weekday-"+id)[0].innerHTML = "";
+		if(entries.weekday.length == 0)
+			$("#pretty-weekday-"+id)[0].innerHTML = "<?php print HINT_ALL_WEEKDAYS_ALLOWED; ?>";
+		for(var i=0; i < entries.weekday.length; i++) {
+			var prefix = "";
+			var suffix = "";
+			if(i == 0 && entries.weekday.length == 1)
+				prefix = "<?php print HINT_PRE_SINGLE_WEEKDAY; ?>";
+			else if(i == 0)
+				var prefix = "<?php print HINT_PRE_MULTI_WEEKDAY; ?>";
+			if(i > 0)
+				prefix = ", "
+			if(i == entries.weekday.length-1) {
+				if(i != 0)
+					prefix = " & ";
+				suffix = "<?php print HINT_SUF_WEEKDAYS_ALLOWED; ?>";
+			}
+			$("#pretty-weekday-"+id)[0].innerHTML += prefix + "<b>" + daysOfWeek[entries.weekday[i]-1] + "</b>" + suffix;
+		}	
+		
+		// Date
 		if(entries.date[0] == "" && entries.date[1] == "")
 			$("#pretty-date-"+id)[0].innerHTML = "<?php print HINT_ALLOWED_EVERY_DAY; ?>";
 		else
 			$("#pretty-date-"+id)[0].innerHTML = 
 				"<?php print HINT_PRE_TIME; ?>" + "<b>" + entries.date[0] + "</b> " + "<?php print HINT_IN_TIME; ?>" + " <b>" + entries.date[1] + "</b>.";
+		
+		// Time
 		if(entries.time[0] == "" && entries.time[1] == "")
 			$("#pretty-time-"+id)[0].innerHTML = "<?php print HINT_ALLOWED_ALL_HOURS; ?>";
 		else
@@ -258,7 +307,7 @@
 	// when the document is completely loaded.
 	// ### -> bootstrap
 	$(function() {
-	
+
 		// Initialization of the colorboxes for elements of the class 'inline'
 		$(".inline").colorbox({ inline: true, width: "50%%", close: "<?php print COLORBOX_CLOSE; ?>" });
 		
@@ -292,7 +341,15 @@
 					return false;
 			}
 		});
-
+		
+		if(fineGrained == 1) {
+			$("#tabs ul").append("<li><a href='#tabs-2'><?php print TAB_FINE_POLICY; ?></a></li>");
+			if(confirm("<?php print HINT_LDAP_APPLET; ?>")) {
+				$("#tabs ul").append("<li><a href='#tabs-3'><?php print LABEL_LDAP_CONFIG; ?></a></li>");
+				$("#tabs").append("<div id='tabs-3'><applet code='org.tresor.pap.ldap.LdapApplet.class' archive='applet/applet.jar' width='600px' height='300px' /></div>");
+			}
+		}
+		
 		$("#tabs").tabs({
 			"create": function(event, ui) {
 				if(policyType < 3) {
@@ -363,7 +420,7 @@
 			}
 		});
 		
-		$(".navi").button();
+		$(".navi").button();		
 	});		
 
 	function showUserGroupInput(bool) {
@@ -408,19 +465,7 @@
 	// Assuming a LDAP with thousands of entries, this function will prevent querying the whole LDAP.
 	function handleRequest(id, value) {
 		if(value == '') return null;
-		else {
-			// searchLdapFor(value).done(setResult);
-			$(".subject-auto").autocomplete("option", "source", [
-				"MMS\\ERB", 
-				"MMS\\SEHP", 
-				"herz\\JStock", 
-				"pauline\\WBroecker",
-				"herz\\HSanders",
-				"MEDISITE\\AGreszik",
-				"MEDISITE\\TFrank",
-				"ANBIETER\\DAnbieter"
-			]);
-		}
+		else { }
 	}
 	
 	// The actual LDAP request.
@@ -464,6 +509,8 @@
 			$("input[value='"+subject.idsrc+"']")[0].checked = true;
 		
 		// Time.
+		for(var i=0; i < time.weekday.length; i++)
+			$("input[value='"+time.weekday[i]+"']")[0].checked = true;		
 		$("#date-from")[0].value = time.date[0];
 		$("#date-to")[0].value = time.date[1];
 		$("#time-from")[0].value = time.time[0];
@@ -506,6 +553,8 @@
 		$("#subject-selection")[0].innerHTML = '';
 		
 		// Time.
+		for(var i=0; i < $("input[name=weekday]").length; i++)
+			$("input[name=weekday]")[i].checked = false;		
 		$("#date-from")[0].value = '';
 		$("#date-to")[0].value = '';
 		$("#time-from")[0].value = '';
@@ -534,7 +583,6 @@
 <div id="tabs">
 	<ul>
 		<li><a href="#tabs-1"><?php print DEFAULT_POLICY; ?></a></li>
-		%4$s
 	</ul>
 
 	<div id="tabs-1">

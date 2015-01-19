@@ -28,6 +28,10 @@
 	define("HINT_SUF_AREA", "Umgebung ausgeführt werden.");
 	define("HINT_SUF_AREAS", "Umgebungen ausgeführt werden.");
 	define("HINT_NO_SELECTION", "Es wurde keine Auswahl getroffen.");
+	define("HINT_ALL_WEEKDAYS_ALLOWED", "Diese Aktion kann <b>an jeden Wochentag</b> ausgeführt werden.");
+	define("HINT_PRE_SINGLE_WEEKDAY", "Diese Aktion kann immer ");
+	define("HINT_PRE_MULTI_WEEKDAY", "Diese Aktion kann immer ");
+	define("HINT_SUF_WEEKDAYS_ALLOWED", " ausgeführt werden.");	
 	define("DEFAULT_POLICY", "Standard-Regeln");
 	define("LABEL_ALLOW_ALL", "Allen Benutzern erlauben");
 	define("LABEL_ALLOW_GROUP", "Benutzergruppen erlauben");
@@ -50,8 +54,18 @@
 	define("LABEL_BETWEEN", "Zwischen");
 	define("LABEL_AND", "und");
 	define("LABEL_HOURS", "Zeitenfenster (Stunden)");
+	define("LABEL_WEEKDAY", "Immer");
+	define("LABEL_MONDAY", "montags");
+	define("LABEL_TUESDAY", "dienstags");
+	define("LABEL_WEDNESDAY", "mittwochs");
+	define("LABEL_THURSDAY", "donnerstags");
+	define("LABEL_FRIDAY", "freitags");
+	define("LABEL_SATURDAY", "samstags");
+	define("LABEL_SUNDAY", "sonntags");	
 	define("HELLO", "Hallo");
 	define("GO_BACK", "Zur&uuml;ck");
 	define("COLORBOX_CLOSE", "Speichern und schlie&szlig;en");
+	define("HINT_LDAP_APPLET", "Möchten Sie Einträge aus einem LDAP-Verzeichnis laden, um Vorschläge für Benutzer zu erhalten?");
+	define("LABEL_LDAP_CONFIG", "LDAP-Konfiguration");
 	
 ?>

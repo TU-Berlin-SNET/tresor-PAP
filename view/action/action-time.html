@@ -8,6 +8,24 @@
 	});
 </script>
 <fieldset>
+	<legend><?php print LABEL_WEEKDAY; ?></legend>
+	<input id="weekday-1" type="checkbox" name="weekday" value="1" onChange="updateTime(this, receiverId);" /> 
+	<?php print LABEL_MONDAY; ?><br />
+	<input id="weekday-2" type="checkbox" name="weekday" value="2" onChange="updateTime(this, receiverId);" /> 
+	<?php print LABEL_TUESDAY; ?><br />
+	<input id="weekday-3" type="checkbox" name="weekday" value="3" onChange="updateTime(this, receiverId);" />
+	<?php print LABEL_WEDNESDAY; ?><br />
+	<input id="weekday-4" type="checkbox" name="weekday" value="4" onChange="updateTime(this, receiverId);" />
+	<?php print LABEL_THURSDAY; ?><br />
+	<input id="weekday-5" type="checkbox" name="weekday" value="5" onChange="updateTime(this, receiverId);" />
+	<?php print LABEL_FRIDAY; ?><br />
+	<input id="weekday-6" type="checkbox" name="weekday" value="6" onChange="updateTime(this, receiverId);" />
+	<?php print LABEL_SATURDAY; ?><br />
+	<input id="weekday-7" type="checkbox" name="weekday" value="7" onChange="updateTime(this, receiverId);" />
+	<?php print LABEL_SUNDAY; ?><br />
+</fieldset>
+<hr />
+<fieldset>
 	<legend><?php print LABEL_TIME_FRAME; ?></legend>
 	<?php print LABEL_BETWEEN; ?> <input id="date-from" type="text" name="date-from" value="" readonly="readonly" onChange="updateTime(this, receiverId);" /> 
 	<?php print LABEL_AND; ?> <input id="date-to" type="text" name="date-to" value="" readonly="readonly" onChange="updateTime(this, receiverId);" />

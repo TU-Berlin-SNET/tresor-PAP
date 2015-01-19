@@ -2,8 +2,7 @@
 
 	class XacmlPolicyGenerator {
 	
-		public function XacmlPolicyGenerator() {
-		}
+		public function XacmlPolicyGenerator() {}
 		
     /**
      * A function to generate a valid GeoXACMLv2 policy
@@ -198,7 +197,7 @@
      * @return <void>
      */
 		private static function writeRule($w, $data, $key, $version) {
-			if(($data["subject"][$key]->idsrc != IDENTITY_SOURCE_NONE) || $key == 0) {			
+			if(($data["subject"][$key]->idsrc != "") || $key == 0) {			
 				$w->startElement("Rule");
 					$w->writeAttribute("RuleId", $key);
 					$w->writeAttribute("Effect", "Permit");
@@ -226,12 +225,12 @@
 								}
 								
 								if($data["subject"][$key]->idsrc != IDENTITY_SOURCE_IDM &&
-									$data["subject"][$key]->idsrc != IDENTITY_SOURCE_NONE) {
+									$data["subject"][$key]->idsrc != "") {
 									
 									$w->startElement("Apply");
-										$w->writeAttribute("FunctionId", "urn:oasis:names:tc:xacml:1.0:function:integer-equal");
+										$w->writeAttribute("FunctionId", INTEGER_EQUAL);
 										$w->startElement("Apply");
-											$w->writeAttribute("FunctionId", "urn:oasis:names:tc:xacml:1.0:function:string-bag-size");
+											$w->writeAttribute("FunctionId", STRING_BAG_SIZE);
 											
 											$w->startElement("AttributeDesignator");
 												if($data["subject"][$key]->idsrc == IDENTITY_SOURCE_HPC)
@@ -240,14 +239,14 @@
 													$w->writeAttribute("AttributeId", NPA_ATTRIBUTE);
 												elseif($data["subject"][$key]->idsrc == IDENTITY_SOURCE_EGK)
 													$w->writeAttribute("AttributeId", EGK_ATTRIBUTE);
-												$w->writeAttribute("Category", "urn:oasis:names:tc:xacml:1.0:subject-category:access-subject");							
+												$w->writeAttribute("Category", CATEGORY_SUBJECT);							
 												$w->writeAttribute("DataType", TYPE_STRING);
 												$w->writeAttribute("MustBePresent", "true");
 											$w->endElement();				
 											
 										$w->endElement();
 										$w->startElement("AttributeValue");
-											$w->writeAttribute("DataType", "http://www.w3.org/2001/XMLSchema#integer");
+											$w->writeAttribute("DataType", TYPE_INTEGER);
 											$w->text("1");
 										$w->endElement();
 										
@@ -267,6 +266,9 @@
 								
 								// If time has been defined, do this.
 								if(!empty($data["time"][$key])) {
+									if(!empty($data["time"][$key]->weekday))
+										XacmlPolicyGenerator::writeWeekday($w, $data, $key, $version);
+								
 									if(!empty($data["time"][$key]->time[0])) {
 										XacmlPolicyGenerator::writeTime($w, $data, $key, $version);
 									}
@@ -350,7 +352,7 @@
 							$w->endElement();
 							$w->startElement("AttributeDesignator");
 								$w->writeAttribute("AttributeId", RESOURCE_ID);
-								$w->writeAttribute("Category", "urn:oasis:names:tc:xacml:3.0:attribute-category:resource");
+								$w->writeAttribute("Category", CATEGORY_RESOURCE);
 								$w->writeAttribute("DataType", TYPE_STRING);
 								$w->writeAttribute("MustBePresent", "true");
 							$w->endElement();
@@ -363,7 +365,7 @@
 							$w->endElement();
 							$w->startElement("AttributeDesignator");
 								$w->writeAttribute("AttributeId", ACTION_ID);
-								$w->writeAttribute("Category", "urn:oasis:names:tc:xacml:3.0:attribute-category:action");
+								$w->writeAttribute("Category", CATEGORY_ACTION);
 								$w->writeAttribute("DataType", TYPE_STRING);
 								$w->writeAttribute("MustBePresent", "true");
 							$w->endElement();
@@ -397,7 +399,7 @@
 					else if($version == "V3") {
 						$w->startElement("AttributeDesignator");
 							$w->writeAttribute("AttributeId", SUBJECT_ID);
-							$w->writeAttribute("Category", "urn:oasis:names:tc:xacml:1.0:subject-category:access-subject");							
+							$w->writeAttribute("Category", CATEGORY_SUBJECT);							
 							$w->writeAttribute("DataType", TYPE_STRING);
 							$w->writeAttribute("MustBePresent", "true");
 						$w->endElement();					
@@ -441,7 +443,7 @@
 					else if($version == "V3") {
 						$w->startElement("AttributeDesignator");
 							$w->writeAttribute("AttributeId", SUBJECT_ROLE);
-							$w->writeAttribute("Category", "urn:oasis:names:tc:xacml:1.0:subject-category:access-subject");
+							$w->writeAttribute("Category", CATEGORY_SUBJECT);
 							$w->writeAttribute("DataType", TYPE_STRING);
 							$w->writeAttribute("MustBePresent", "true");							
 						$w->endElement();					
@@ -459,6 +461,36 @@
 					}
 				$w->endElement();
 			$w->endElement();		
+		}
+		
+		private static function writeWeekday($w, $data, $key, $version) {
+			if($version == "V2")
+				return;
+			
+			$w->startElement("Apply");
+			$w->writeAttribute("FunctionId", ANY_OF);
+				$w->startElement("Function");
+				$w->writeAttribute("FunctionId", INTEGER_EQUAL);
+				$w->endElement();
+				$w->startElement("Apply");
+				$w->writeAttribute("FunctionId", INTEGER_ONE_AND_ONLY);
+					$w->startElement("AttributeDesignator");
+						$w->writeAttribute("AttributeId", ATTRIBUTE_WEEKDAY);
+						$w->writeAttribute("Category", CATEGORY_ENVIRONMENT);
+						$w->writeAttribute("DataType", TYPE_INTEGER);
+						$w->writeAttribute("MustBePresent", "true");
+					$w->endElement();
+				$w->endElement();
+				$w->startElement("Apply");
+					$w->writeAttribute("FunctionId", INTEGER_BAG);
+					foreach($data["time"][$key]->weekday as $value) {
+						$w->startElement("AttributeValue");
+							$w->writeAttribute("DataType", TYPE_INTEGER);
+							$w->text($value);
+						$w->endElement();
+					}
+				$w->endElement();
+			$w->endElement();			
 		}
 		
     /**
@@ -484,7 +516,7 @@
 						else if($version == "V3") {
 							$w->startElement("AttributeDesignator");
 								$w->writeAttribute("AttributeId", CURRENT_TIME);
-								$w->writeAttribute("Category", "urn:oasis:names:tc:xacml:3.0:attribute-category:environment");								
+								$w->writeAttribute("Category", CATEGORY_ENVIRONMENT);								
 								$w->writeAttribute("DataType", TYPE_TIME);
 								$w->writeAttribute("MustBePresent", "true");								
 							$w->endElement();						
@@ -510,7 +542,7 @@
 						else if($version == "V3") {
 							$w->startElement("AttributeDesignator");
 								$w->writeAttribute("AttributeId", CURRENT_TIME);
-								$w->writeAttribute("Category", "urn:oasis:names:tc:xacml:3.0:attribute-category:environment");								
+								$w->writeAttribute("Category", CATEGORY_ENVIRONMENT);								
 								$w->writeAttribute("DataType", TYPE_TIME);
 								$w->writeAttribute("MustBePresent", "true");
 							$w->endElement();						
@@ -549,7 +581,7 @@
 						else if($version == "V3") {
 							$w->startElement("AttributeDesignator");
 								$w->writeAttribute("AttributeId", CURRENT_DATE);
-								$w->writeAttribute("Category", "urn:oasis:names:tc:xacml:3.0:attribute-category:environment");								
+								$w->writeAttribute("Category", CATEGORY_ENVIRONMENT);								
 								$w->writeAttribute("DataType", TYPE_DATE);
 								$w->writeAttribute("MustBePresent", "true");
 							$w->endElement();						
@@ -575,7 +607,7 @@
 						else if($version == "V3") {
 							$w->startElement("AttributeDesignator");
 								$w->writeAttribute("AttributeId", CURRENT_DATE);
-								$w->writeAttribute("Category", "urn:oasis:names:tc:xacml:3.0:attribute-category:environment");								
+								$w->writeAttribute("Category", CATEGORY_ENVIRONMENT);								
 								$w->writeAttribute("DataType", TYPE_DATE);
 								$w->writeAttribute("MustBePresent", "true");
 							$w->endElement();						
@@ -618,7 +650,7 @@
 							else if($version == "V3") {
 								$w->startElement("AttributeDesignator");
 									$w->writeAttribute("AttributeId", "position");
-									$w->writeAttribute("Category", "urn:oasis:names:tc:xacml:3.0:attribute-category:environment");									
+									$w->writeAttribute("Category", CATEGORY_ENVIRONMENT);									
 									$w->writeAttribute("DataType", TYPE_GEOMETRY);
 									$w->writeAttribute("MustBePresent", "true");
 								$w->endElement();							

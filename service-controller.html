@@ -59,7 +59,8 @@
 		// Generate policy.
 		XacmlPolicyGenerator::generateV3Policy(
 			POLICY_PATH.$_SESSION["enterprise_id"]."_".$_POST["serviceId"]."_XACMLV3_policy.xml", 
-			$_POST, $_POST["serviceId"], 
+			$_POST, 
+			$_POST["serviceId"], 
 			$_POST["serviceDesc"], 
 			$_POST["serviceUrl"], 
 			$_SESSION["enterprise_id"]

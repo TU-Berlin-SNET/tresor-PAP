@@ -14,7 +14,7 @@
 	define("HINT_ALL_USERS_ALLOWED", "<b>All users</b> are allowed to perform this action.");
 	define("HINT_MULTIPLE_USERS_ALLOWED", " are authorized to perform this action.");
 	define("HINT_SINGLE_USER_ALLOWED", " is authorized to perform this action.");
-	define("HINT_AUTH_METHOD", "Users must use the authentication technique");
+	define("HINT_AUTH_METHOD", "Users must use the authentication technique: ");
 	define("HINT_ALL_ROLES_ALLOWED", "<b>All roles</b> are allowed to perform this action.");
 	define("HINT_PRE_SINGLE_ROLE", "Users with the role ");
 	define("HINT_PRE_MULTI_ROLE", "Users with the roles ");
@@ -28,6 +28,10 @@
 	define("HINT_SUF_AREA", "area.");
 	define("HINT_SUF_AREAS", "areas.");
 	define("HINT_NO_SELECTION", "No selection has been made!");
+	define("HINT_ALL_WEEKDAYS_ALLOWED", "This action can be performed <b>on each day of the week</b>.");
+	define("HINT_PRE_SINGLE_WEEKDAY", "This action can be performed on every ");
+	define("HINT_PRE_MULTI_WEEKDAY", "This action can be performed on the days ");
+	define("HINT_SUF_WEEKDAYS_ALLOWED", ".");
 	define("DEFAULT_POLICY", "Default Policy");
 	define("LABEL_ALLOW_ALL", "Allow all");
 	define("LABEL_ALLOW_GROUP", "Allow groups");
@@ -50,8 +54,18 @@
 	define("LABEL_BETWEEN", "Between");
 	define("LABEL_AND", "and");
 	define("LABEL_HOURS", "Hours");
+	define("LABEL_WEEKDAY", "Each");
+	define("LABEL_MONDAY", "Monday");
+	define("LABEL_TUESDAY", "Tuesday");
+	define("LABEL_WEDNESDAY", "Wednesday");
+	define("LABEL_THURSDAY", "Thursday");
+	define("LABEL_FRIDAY", "Friday");
+	define("LABEL_SATURDAY", "Saturday");
+	define("LABEL_SUNDAY", "Sunday");
 	define("HELLO", "Hello");
 	define("GO_BACK", "Go back");
 	define("COLORBOX_CLOSE", "Save and apply");
+	define("HINT_LDAP_APPLET", "Do you want to connect to a LDAP server in order to retrieve suggestions for users?");
+	define("LABEL_LDAP_CONFIG", "LDAP configuration");
 	
 ?>

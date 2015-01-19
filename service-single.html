@@ -29,9 +29,9 @@
 	else
 		$groups = "";
 		
-	$tabs2 = "";
+	$fineGrained = 0;
 	if($s != null)
-		$tabs2 = "<li><a href='#tabs-2'>".TAB_FINE_POLICY."</a></li>";
+		$fineGrained = 1;
 
 	$content = "";
 	$content .= sprintf(
@@ -39,7 +39,7 @@
 		$type,
 		$_GET["id"],
 		htmlentities(json_encode($groups)),
-		$tabs2
+		$fineGrained
 	);
 	
 	if($s != null) {
@@ -59,7 +59,7 @@
 		
 		foreach($s->getActionsOfService() as $key => $value) {
 			if($data == NULL)
-				$content .= $value->toHTML();
+				$content .= toHTML($value);
 			else {
 				if(!empty($data["subject"][$key]))
 					$subject = json_encode($data["subject"][$key]);
@@ -101,9 +101,9 @@
 		
 	function toHTML($action, $subject = NULL, $time = NULL, $location = NULL) {
 		if($subject == NULL)
-			$subject = "{ roles: [], users: [], idsrc: 'Keine' }";
+			$subject = "{ roles: [], users: [], idsrc: '' }";
 		if($time == NULL)
-			$time = "{ date: ['',''], time: ['',''] }";
+			$time = "{ weekday: [], date: ['',''], time: ['',''] }";
 		if($location == NULL)
 			$location = "[]";
 			

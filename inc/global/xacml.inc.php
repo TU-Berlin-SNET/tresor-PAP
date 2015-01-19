@@ -17,6 +17,11 @@
 	define("STRING_BAG", "urn:oasis:names:tc:xacml:1.0:function:string-bag");
 	define("STRING_EQUAL", "urn:oasis:names:tc:xacml:1.0:function:string-equal");
 	define("STRING_ONE_AND_ONLY", "urn:oasis:names:tc:xacml:1.0:function:string-one-and-only");
+	define("STRING_BAG_SIZE", "urn:oasis:names:tc:xacml:1.0:function:string-bag-size");
+	
+	define("INTEGER_BAG", "urn:oasis:names:tc:xacml:1.0:function:integer-bag");
+	define("INTEGER_EQUAL", "urn:oasis:names:tc:xacml:1.0:function:integer-equal");
+	define("INTEGER_ONE_AND_ONLY", "urn:oasis:names:tc:xacml:1.0:function:integer-one-and-only");
 	
 	define("TIME_ONE_AND_ONLY", "urn:oasis:names:tc:xacml:1.0:function:time-one-and-only");
 	define("TIME_GREATER_THAN_OR_EQUAL", "urn:oasis:names:tc:xacml:1.0:function:time-greater-than-or-equal");
@@ -29,6 +34,7 @@
 	define("GEOMETRY_INTERSECTS", "urn:ogc:def:function:geoxacml:1.0:geometry-intersects");
 	define("GEOMETRY_ONE_AND_ONLY", "urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only");
 	
+	define("TYPE_INTEGER", "http://www.w3.org/2001/XMLSchema#integer");
 	define("TYPE_STRING", "http://www.w3.org/2001/XMLSchema#string");
 	define("TYPE_TIME", "http://www.w3.org/2001/XMLSchema#time");
 	define("TYPE_DATE", "http://www.w3.org/2001/XMLSchema#date");
@@ -45,5 +51,12 @@
 	define("SUBJECT_ROLE", "urn:oasis:names:tc:xacml:1.0:subject:subject:role");
 	define("CURRENT_TIME", "urn:oasis:names:tc:xacml:1.0:environment:current-time");
 	define("CURRENT_DATE", "urn:oasis:names:tc:xacml:1.0:environment:current-date");
+	
+	define("ATTRIBUTE_WEEKDAY", "org:snet:tresor:attribute:weekday");
+	
+	define("CATEGORY_SUBJECT", "urn:oasis:names:tc:xacml:1.0:subject-category:access-subject");
+	define("CATEGORY_RESOURCE", "urn:oasis:names:tc:xacml:3.0:attribute-category:resource");
+	define("CATEGORY_ACTION", "urn:oasis:names:tc:xacml:3.0:attribute-category:action");
+	define("CATEGORY_ENVIRONMENT", "urn:oasis:names:tc:xacml:3.0:attribute-category:environment");
 	
 ?>
