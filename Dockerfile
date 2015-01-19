@@ -1,29 +1,18 @@
 FROM dockerfile/ubuntu
 
-RUN sudo apt-get update &&\
-		sudo apt-get install -y apache2 &&\
-		sudo apt-get install -y php5 &&\
-		sudo apt-get install -y libapache2-mod-php5 &&\
-		sudo apt-get install -y php5-curl &&\
-		sudo apt-get install -y curl
+RUN apt-get update &&\
+	apt-get install -y apache2 php5 libapache2-mod-php5 php5-curl curl
 
-ADD . /opt/tresor-pap
-WORKDIR /opt/tresor-pap
-
-RUN sudo cp /opt/tresor-pap/apache-conf/tresor-pap.conf /etc/apache2/sites-available/tresor-pap.conf &&\
-		sudo cp /opt/tresor-pap/apache-conf/apache2.conf /etc/apache2/apache2.conf &&\
-		sudo cp -r /opt/tresor-pap/ /var/www/html/ &&\
-		sudo chown -R www-data:www-data /var/www/html/tresor-pap/ &&\
-		cd /var/www/html/tresor-pap/ &&\
-		sudo chmod -R 777 /var/www/html/tresor-pap/ &&\
-		sudo curl -sS https://getcomposer.org/installer | php &&\
-		sudo php composer.phar install &&\
-		sudo chown -R www-data:www-data /var/www/html/tresor-pap/ &&\
-		sudo chmod -R 755 /var/www/html/tresor-pap/
-		sudo a2ensite tresor-pap.conf &&\
-		sudo service apache2 restart 
+ADD . /var/www/html/tresor-pap
 
 WORKDIR /var/www/html/tresor-pap
+
+RUN cp /var/www/html/tresor-pap/apache-conf/tresor-pap.conf /etc/apache2/sites-available &&\
+	curl -sS https://getcomposer.org/installer | php &&\
+	php composer.phar install &&\
+	chown -R www-data:www-data /var/www/html/tresor-pap &&\
+	a2dissite 000-default &&\
+	a2ensite tresor-pap
 
 EXPOSE 80
 
